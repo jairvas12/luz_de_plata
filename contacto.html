@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="es">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta content="Luz de Plata, tienda online de joyas de plata 925." name="description"/>
+  <title>
+   Contacto | Luz de Plata
+  </title>
+  <link href="css/estilos.css" rel="stylesheet"/>
+ </head>
+ <body>
+  <header>
+   <div class="cabecera">
+    <a class="logo" href="index.html">
+     <img alt="Luz de Plata joyas" src="img/logo/logo-lp.png"/>
+    </a>
+    <form class="buscador" data-search-form="" role="search">
+     <label class="oculto" for="busqueda-page">
+      Buscar productos
+     </label>
+     <input aria-label="Buscar productos" id="busqueda-page" maxlength="80" placeholder="¿QUÉ BUSCAS?" type="search"/>
+     <button aria-label="Buscar">
+      ⌕
+     </button>
+    </form>
+    <div class="acciones">
+     <a class="accion" href="favoritos.html">
+      <span class="accion__icono">
+       ♡
+      </span>
+      <span class="accion__texto">
+       Favoritos
+      </span>
+     </a>
+     <a class="accion" href="login.html">
+      <span class="accion__icono">
+       ♙
+      </span>
+      <span class="usuario-estado" data-user-state="">
+       Cuenta
+      </span>
+     </a>
+     <a class="accion" href="carrito.html">
+      <span class="accion__icono">
+       🛒
+      </span>
+      <span class="accion__texto">
+       Carrito
+      </span>
+      <span class="contador" data-cart-count="">
+       0
+      </span>
+     </a>
+     <button class="accion accion--boton oculto" data-logout="" title="Cerrar sesión" type="button">
+      <span class="accion__icono">
+       ↪
+      </span>
+      <span class="accion__texto">
+       Salir
+      </span>
+     </button>
+    </div>
+   </div>
+  </header>
+  <nav aria-label="Navegación principal" class="menu-principal">
+   <ul>
+    <li>
+     <a href="index.html">
+      INICIO
+     </a>
+    </li>
+    <li>
+     <a href="mas-vendidos.html">
+      MÁS VENDIDOS
+     </a>
+    </li>
+    <li>
+     <a href="catalogo.html">
+      CATÁLOGO
+     </a>
+    </li>
+    <li>
+     <a href="envios.html">
+      ENVÍOS
+     </a>
+    </li>
+    <li>
+     <a href="conocenos.html">
+      CONÓCENOS
+     </a>
+    </li>
+   </ul>
+  </nav>
+  <main>
+   <section class="pagina-encabezado">
+    <div class="contenedor">
+     <h1>
+      Contacto
+     </h1>
+     <p class="bajada">
+      Cuéntanos en qué podemos ayudarte. Los mensajes se guardan localmente como demostración.
+     </p>
+    </div>
+   </section>
+   <section class="seccion--corta">
+    <div class="contenedor dos-columnas">
+     <form class="panel formulario" id="contacto-form" novalidate="">
+      <h2>
+       Formulario de contacto
+      </h2>
+      <div class="campo">
+       <label for="contact-name">
+        Nombre *
+       </label>
+       <input autocomplete="name" id="contact-name" maxlength="100" name="name" required=""/>
+       <span class="error-campo">
+       </span>
+      </div>
+      <div class="campo">
+       <label for="contact-email">
+        Correo
+       </label>
+       <input autocomplete="email" id="contact-email" maxlength="100" name="email" type="email"/>
+       <span class="error-campo">
+       </span>
+      </div>
+      <div class="campo">
+       <label for="comment">
+        Comentario *
+       </label>
+       <textarea id="comment" maxlength="500" name="comment" required=""></textarea>
+       <span class="ayuda">
+        Máximo 500 caracteres.
+       </span>
+       <span class="error-campo">
+       </span>
+      </div>
+      <button class="boton" type="submit">
+       Enviar mensaje
+      </button>
+     </form>
+     <aside class="panel">
+      <h2>
+       Atención Luz de Plata
+      </h2>
+      <p>
+       Respondemos consultas sobre productos, disponibilidad y envíos.
+      </p>
+      <p>
+       <strong>
+        Horario:
+       </strong>
+       <br/>
+       Lunes a viernes, 10:00 a 18:00.
+      </p>
+      <p>
+       <strong>
+        Correo:
+       </strong>
+       <br/>
+       contacto@luzdeplata.cl
+      </p>
+     </aside>
+    </div>
+   </section>
+  </main>
+  <footer>
+   <div class="pie">
+    <section>
+     <h2>
+      Luz de Plata
+     </h2>
+     <p>
+      Joyas de plata 925 seleccionadas para acompañar tus momentos especiales.
+     </p>
+    </section>
+    <section>
+     <h3>
+      Ayuda
+     </h3>
+     <p>
+      <a href="contacto.html">
+       Contacto
+      </a>
+      <br/>
+      <a href="envios.html">
+       Envíos
+      </a>
+      <br/>
+      <a href="blog.html">
+       Blog
+      </a>
+     </p>
+    </section>
+    <section>
+     <h3>
+      Mi cuenta
+     </h3>
+     <p>
+      <a href="login.html">
+       Iniciar sesión
+      </a>
+      <br/>
+      <a href="registro.html">
+       Crear cuenta
+      </a>
+      <br/>
+      <a href="mis_compras.html">
+       Mis compras
+      </a>
+     </p>
+    </section>
+   </div>
+   <div class="pie__base">
+    © 2026 Luz de Plata · Proyecto académico DSY1104
+   </div>
+  </footer>
+  <script src="js/storage.js">
+  </script>
+  <script src="js/regiones-comunas.js">
+  </script>
+  <script src="js/validaciones.js">
+  </script>
+  <script src="js/productos.js">
+  </script>
+  <script src="js/usuarios.js">
+  </script>
+  <script src="js/carrito.js">
+  </script>
+  <script src="js/scripts.js">
+  </script>
+ </body>
+</html>

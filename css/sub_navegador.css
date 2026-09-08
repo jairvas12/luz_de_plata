@@ -1,0 +1,24 @@
+.sub-navegador {
+  display:flex;
+  justify-content:center;
+  margin:22px auto 10px;
+}
+.sub-navegador ul {
+  list-style:none;
+  display:flex;
+  gap:4px;
+  margin:0;
+  padding:5px;
+  border:1px solid var(--borde);
+  border-radius:999px;
+  background:white;
+}
+.sub-navegador a {
+  display:block;
+  padding:9px 18px;
+  border-radius:999px;
+  text-decoration:none;
+}
+.sub-navegador a:hover, .sub-navegador a[aria-current="page"] {
+  background:var(--plata);
+}

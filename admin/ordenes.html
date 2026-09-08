@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="es">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Órdenes | Admin Luz de Plata
+  </title>
+  <link href="../css/estilos.css" rel="stylesheet"/>
+  <link href="../css/admin.css" rel="stylesheet"/>
+ </head>
+ <body class="admin-body" data-page="productos">
+  <div class="admin-shell">
+   <aside class="admin-sidebar">
+    <a class="admin-brand" href="index.html">
+     Luz de Plata
+     <br/>
+     <small>
+      Administración
+     </small>
+    </a>
+    <nav class="admin-menu">
+     <a href="index.html">
+      Inicio
+     </a>
+     <a href="productos.html">
+      Productos
+     </a>
+     <a class="activo" href="ordenes.html">
+      Órdenes
+     </a>
+     <a data-admin-only="" href="producto-nuevo.html">
+      Nuevo producto
+     </a>
+     <a data-admin-only="" href="usuarios.html">
+      Usuarios
+     </a>
+     <a data-admin-only="" href="usuario-nuevo.html">
+      Nuevo usuario
+     </a>
+    </nav>
+    <div class="admin-sidebar__pie">
+     <a class="boton boton--claro" href="../index.html">
+      Ver tienda
+     </a>
+     <button class="boton boton--suave" data-admin-logout="">
+      Cerrar sesión
+     </button>
+    </div>
+   </aside>
+   <main class="admin-main">
+    <header class="admin-topbar">
+     <strong>
+      Órdenes
+     </strong>
+     <span data-admin-user="">
+     </span>
+    </header>
+    <section class="admin-contenido">
+     <div class="admin-toolbar">
+      <div>
+       <h1>
+        Órdenes
+       </h1>
+       <p class="muted">
+        Listado de compras simuladas registradas en localStorage.
+       </p>
+      </div>
+     </div>
+     <div class="tabla-wrap">
+      <table class="tabla">
+       <thead>
+        <tr>
+         <th>
+          Orden
+         </th>
+         <th>
+          Cliente
+         </th>
+         <th>
+          Fecha
+         </th>
+         <th>
+          Productos
+         </th>
+         <th>
+          Total
+         </th>
+         <th>
+          Acción
+         </th>
+        </tr>
+       </thead>
+       <tbody data-admin-orders="">
+       </tbody>
+      </table>
+     </div>
+    </section>
+   </main>
+  </div>
+  <script src="../js/storage.js">
+  </script>
+  <script src="../js/regiones-comunas.js">
+  </script>
+  <script src="../js/validaciones.js">
+  </script>
+  <script src="../js/productos.js">
+  </script>
+  <script src="../js/usuarios.js">
+  </script>
+  <script src="../js/admin.js">
+  </script>
+ </body>
+</html>
