@@ -27,8 +27,6 @@ Proyecto frontend desarrollado con **HTML5, CSS externo y JavaScript puro**. La 
 - Región/comuna dependientes.
 - Diseño responsivo.
 
-## Reiniciar datos
 
-En las herramientas de desarrollador del navegador, elimina las claves que comienzan con `lp_` en Local Storage y recarga la página. El proyecto volverá a cargar sus datos de demostración.
 
-> Nota: localStorage no es una base de datos segura ni multiusuario. Se usa únicamente como persistencia local para esta entrega académica.
+
