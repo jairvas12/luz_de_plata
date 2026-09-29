@@ -1,12 +1,23 @@
-
 import Cabecera from './components/Cabecera'
-import Nav from './components/Nav'
+import Hero from './components/Hero'
+import Menu from './components/Menu'
+import ProductosDestacados from './components/ProductosDestacados'
+import Beneficios from './components/Beneficios'
+import Pie from './components/Pie'
+
 function App() {
   return (
     <>
-      <Cabecera></Cabecera>
-      <Nav></Nav>
+      <Cabecera />
+      <Menu />
+      <main> 
+        <Hero />
+        <ProductosDestacados />
+        <Beneficios />
+      </main>
+      <Pie />
     </>
   )
 }
+
 export default App
