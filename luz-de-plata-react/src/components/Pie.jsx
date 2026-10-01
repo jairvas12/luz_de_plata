@@ -17,7 +17,7 @@ function Pie() {
               <br />
               <a href="envios.html">Envíos</a>
               <br />
-              <a href="blog.html">Blog</a>
+              <a href="/Blog">Blog</a>
             </p>
           </section>
           <section>
