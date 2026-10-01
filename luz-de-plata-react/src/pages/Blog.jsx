@@ -1,3 +1,5 @@
+import "../css/estilos.css";
+
 function Blog() {
     return (
         <>
@@ -26,7 +28,7 @@ function Blog() {
                                 <p>
                                     Hábitos simples para mantener su brillo y reducir el oscurecimiento natural.
                                 </p>
-                                <a className="boton boton--claro" href="blog-detalle-1.html">
+                                <a className="boton boton--claro" href="/Blog1">
                                     Leer artículo
                                 </a>
                             </div>
@@ -43,7 +45,7 @@ function Blog() {
                                 <p>
                                     Una guía breve para encontrar un detalle significativo sin complicarte.
                                 </p>
-                                <a className="boton boton--claro" href="blog-detalle-2.html">
+                                <a className="boton boton--claro" href="/Blog2">
                                     Leer artículo
                                 </a>
                             </div>

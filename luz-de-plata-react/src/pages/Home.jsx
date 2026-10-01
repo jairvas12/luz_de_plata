@@ -1,5 +1,5 @@
 import productos from "../data/productos";
-
+import "../css/estilos.css";
 function Home() {
     const destacados = productos.filter((producto) => producto.featured);
     return (

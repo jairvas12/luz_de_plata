@@ -6,11 +6,11 @@ function Cabecera() {
     <>
       <header>
         <div className="cabecera">
-          <a className="logo" href="index.html">
+          <a className="logo" href="/">
             <img alt="Luz de Plata joyas" src="/img/logo/logo-lp.png" />
           </a>
-          <htmlFor className="buscador" data-search-htmlFor="" role="search">
-            <label className="oculto" for="busqueda-index">
+          <div className="buscador" role="search">
+            <label className="oculto" htmlFor="busqueda-index">
               Buscar productos
             </label>
             <input
@@ -21,7 +21,7 @@ function Cabecera() {
               type="search"
             />
             <button aria-label="Buscar">⌕</button>
-          </htmlFor>
+          </div>
           <div className="acciones">
             <a className="accion" href="favoritos.html">
               <span className="accion__icono">♡</span>
