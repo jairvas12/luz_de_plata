@@ -4,7 +4,7 @@ function Nav() {
     <nav aria-label="Navegación principal" className="menu-principal">
       <ul>
         <li>
-          <a aria-current="page" href="index.html">
+          <a aria-current="page" href="/">
             INICIO
           </a>
         </li>
@@ -15,7 +15,7 @@ function Nav() {
           <a href="catalogo.html">CATÁLOGO</a>
         </li>
         <li>
-          <a href="envios.html">ENVÍOS</a>
+          <a href="/Envios">ENVÍOS</a>
         </li>
         <li>
           <a href="conocenos.html">CONÓCENOS</a>

@@ -9,6 +9,7 @@ import Home from './pages/Home'
 import Blog from './pages/Blog'
 import Blog1 from './pages/Blog1'
 import Blog2 from './pages/Blog2'
+import Envios from './pages/Envios'
 
 import { Routes, Route } from 'react-router-dom'
 function App() {
@@ -21,6 +22,7 @@ function App() {
         <Route path="/Blog" element={<Blog />} />
         <Route path="/Blog1" element={<Blog1 />} />
         <Route path="/Blog2" element={<Blog2 />} />
+        <Route path="/Envios" element={<Envios />} />
       </Routes>
       <Pie />
     </>

@@ -1,3 +1,4 @@
+import "../css/estilos.css";
 function Blog2() {
     return (
         <>
