@@ -17,7 +17,7 @@ function Home() {
                         src="/video/inicio.mp4"
                         type="video/mp4"
                     />
-                </video>
+                </video>g
                 <div className="contenedor hero__contenido">
                     <p>PLATA 925 · DISEÑO ATEMPORAL</p>
                     <h1>Joyas que iluminan cada momento</h1>

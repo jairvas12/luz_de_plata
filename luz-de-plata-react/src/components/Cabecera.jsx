@@ -27,7 +27,7 @@ function Cabecera() {
               <span className="accion__icono">♡</span>
               <span className="accion__texto">Favoritos</span>
             </a>
-            <a className="accion" href="login.html">
+            <a className="accion" href="/Login">
               <span className="accion__icono">♙</span>
               <span className="usuario-estado" data-user-state="">
                 Cuenta

@@ -24,7 +24,7 @@ function Pie() {
           <section>
             <h3>Mi cuenta</h3>
             <p>
-              <a href="login.html">Iniciar sesión</a>
+              <a href="/Login">Iniciar sesión</a>
               <br />
               <a href="registro.html">Crear cuenta</a>
               <br />
