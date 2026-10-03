@@ -18,7 +18,7 @@ function Nav() {
           <a href="/Envios">ENVÍOS</a>
         </li>
         <li>
-          <a href="conocenos.html">CONÓCENOS</a>
+          <a href="/Conocenos">CONÓCENOS</a>
         </li>
       </ul>
     </nav>

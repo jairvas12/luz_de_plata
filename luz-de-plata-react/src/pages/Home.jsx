@@ -1,7 +1,6 @@
 import productos from "../data/productos";
 import ProductoCard from "../components/ProductoCard";
 import "../css/estilos.css";
-import "../video/inicio.mp4"
 function Home() {
     const destacados = productos.filter((producto) => producto.featured);
     return (
