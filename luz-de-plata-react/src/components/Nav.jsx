@@ -9,7 +9,7 @@ function Nav() {
           </a>
         </li>
         <li>
-          <a href="mas-vendidos.html">MÁS VENDIDOS</a>
+          <a href="/MasVendidos">MÁS VENDIDOS</a>
         </li>
         <li>
           <a href="catalogo.html">CATÁLOGO</a>

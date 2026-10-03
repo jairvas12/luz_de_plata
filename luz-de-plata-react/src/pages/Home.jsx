@@ -1,4 +1,5 @@
 import productos from "../data/productos";
+import ProductoCard from "../components/ProductoCard";
 import "../css/estilos.css";
 function Home() {
     const destacados = productos.filter((producto) => producto.featured);
@@ -32,27 +33,19 @@ function Home() {
                     <h2 className="titulo-seccion">Selección destacada</h2>
 
                     <p className="bajada">Una muestra de nuestras joyas más elegidas.</p>
-
                     <div className="productos-grid">
-                        {destacados.map((producto) => (
-                            <article className="producto-card" key={producto.id}>
-                                <div className="producto-card__imagen">
-                                    <img src={producto.image} alt={producto.name} />
-                                </div>
 
-                                <div className="producto-card__cuerpo">
-                                    <span className="producto-card__categoria">
-                                        {producto.category}
-                                    </span>
+                        {destacados.map(
+                            producto => (
 
-                                    <h3>{producto.name}</h3>
+                                <ProductoCard
+                                    key={producto.id}
+                                    producto={producto}
+                                />
 
-                                    <p className="producto-card__precio">
-                                        ${producto.price.toLocaleString("es-CL")}
-                                    </p>
-                                </div>
-                            </article>
-                        ))}
+                            )
+                        )}
+
                     </div>
                 </div>
             </section>
