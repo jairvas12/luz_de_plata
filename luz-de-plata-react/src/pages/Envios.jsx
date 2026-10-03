@@ -23,7 +23,7 @@ function Envios() {
                                 </a>
                             </li>
                             <li>
-                                <a href="mis_compras.html">
+                                <a href="/MisCompras">
                                     MIS COMPRAS
                                 </a>
                             </li>

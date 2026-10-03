@@ -16,6 +16,7 @@ import Conocenos from './pages/Conocenos'
 import Contacto from './pages/Contacto'
 import Catalogo from './pages/Catalogo'
 import Login from './pages/Login'
+import MisCompras from './pages/MisCompras'
 
 import { Routes, Route } from 'react-router-dom'
 function App() {
@@ -35,6 +36,7 @@ function App() {
         <Route path="/Contacto" element={<Contacto />} />
         <Route path="/Catalogo" element={<Catalogo />} />
         <Route path="/Login" element={<Login />} />
+        <Route path="/MisCompras" element={<MisCompras />} />
       </Routes>
       <Pie />
     </>
