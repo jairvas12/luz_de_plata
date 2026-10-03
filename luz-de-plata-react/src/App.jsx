@@ -14,6 +14,7 @@ import Compra_Exitosa from './pages/Compra_Exitosa'
 import MasVendidos from './pages/MasVendidos'
 import Conocenos from './pages/Conocenos'
 import Contacto from './pages/Contacto'
+import Catalogo from './pages/Catalogo'
 
 import { Routes, Route } from 'react-router-dom'
 function App() {
@@ -31,6 +32,7 @@ function App() {
         <Route path="/MasVendidos" element={<MasVendidos />} />
         <Route path="/Conocenos" element={<Conocenos />} />
         <Route path="/Contacto" element={<Contacto />} />
+        <Route path="/Catalogo" element={<Catalogo />} />
       </Routes>
       <Pie />
     </>
