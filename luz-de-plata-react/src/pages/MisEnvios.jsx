@@ -1,13 +1,13 @@
 import "../css/estilos.css";
 
-function MisCompras() {
+function MisEnvios() {
     return (
         <>
             <main>
                 <section className="pagina-encabezado">
                     <div className="contenedor">
                         <h1>
-                            Mis compras
+                            Mis envíos
                         </h1>
                     </div>
                 </section>
@@ -20,12 +20,12 @@ function MisCompras() {
                                 </a>
                             </li>
                             <li>
-                                <a aria-current="page" href="/MisCompras">
+                                <a href="/MisCompras">
                                     MIS COMPRAS
                                 </a>
                             </li>
                             <li>
-                                <a href="/MisEnvios">
+                                <a aria-current="page" href="/MisEnvios">
                                     MIS ENVÍOS
                                 </a>
                             </li>
@@ -33,15 +33,14 @@ function MisCompras() {
                     </nav>
                 </div>
                 <section className="seccion--corta">
-                    <div className="contenedor historial">
+                    <div className="contenedor">
                         <div className="mensaje-vacio">
-                            Aún no registras compras.
+                            Aún no registras envíos.
                         </div>
                     </div>
                 </section>
-
             </main>
         </>
     )
 }
-export default MisCompras
+export default MisEnvios

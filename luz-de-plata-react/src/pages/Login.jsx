@@ -1,3 +1,5 @@
+import "../css/estilos.css";
+
 import {
   useState
 } from "react";

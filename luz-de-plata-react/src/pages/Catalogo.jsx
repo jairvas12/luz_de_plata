@@ -1,3 +1,4 @@
+import "../css/estilos.css";
 function Catalogo() {
   return (
     <>

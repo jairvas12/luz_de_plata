@@ -17,7 +17,7 @@ import Contacto from './pages/Contacto'
 import Catalogo from './pages/Catalogo'
 import Login from './pages/Login'
 import MisCompras from './pages/MisCompras'
-
+import MisEnvios from './pages/MisEnvios'
 import { Routes, Route } from 'react-router-dom'
 function App() {
   return (
@@ -37,6 +37,7 @@ function App() {
         <Route path="/Catalogo" element={<Catalogo />} />
         <Route path="/Login" element={<Login />} />
         <Route path="/MisCompras" element={<MisCompras />} />
+        <Route path="/MisEnvios" element={<MisEnvios />} />
       </Routes>
       <Pie />
     </>

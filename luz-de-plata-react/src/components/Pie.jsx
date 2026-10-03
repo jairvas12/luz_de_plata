@@ -28,7 +28,7 @@ function Pie() {
               <br />
               <a href="registro.html">Crear cuenta</a>
               <br />
-              <a href="mis_compras.html">Mis compras</a>
+              <a href="/MisCompras">Mis compras</a>
             </p>
           </section>
         </div>

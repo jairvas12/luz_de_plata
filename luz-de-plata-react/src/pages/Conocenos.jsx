@@ -1,3 +1,4 @@
+import "../css/estilos.css";
 function Conocenos() {
   return (
     <>
@@ -30,7 +31,7 @@ function Conocenos() {
                 JavaScript puro. La persistencia de la demostración utiliza
                 localStorage, sin servidor ni base de datos externa.
               </p>
-              <a className="boton" href="catalogo.html">
+              <a className="boton" href="/Catalogo">
                 Descubrir joyas
               </a>
             </article>

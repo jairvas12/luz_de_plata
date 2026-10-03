@@ -1,3 +1,4 @@
+import "../css/estilos.css";
 function Compra_Exitosa() {
     return (
         <>
