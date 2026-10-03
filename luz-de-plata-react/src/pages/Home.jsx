@@ -1,20 +1,23 @@
 import productos from "../data/productos";
 import ProductoCard from "../components/ProductoCard";
 import "../css/estilos.css";
+import "../video/inicio.mp4"
 function Home() {
     const destacados = productos.filter((producto) => producto.featured);
     return (
         <>
             <section className="hero">
                 <video
-                    autoplay=""
-                    loop=""
-                    muted=""
-                    playsinline=""
-                    poster="img/aros/1.webp"
+                    className="hero__video"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
                 >
-                    <source src="video/inicio.mp4" type="video/mp4" />
-                    Tu navegador no puede reproducir el video.
+                    <source
+                        src="/video/inicio.mp4"
+                        type="video/mp4"
+                    />
                 </video>
                 <div className="contenedor hero__contenido">
                     <p>PLATA 925 · DISEÑO ATEMPORAL</p>
