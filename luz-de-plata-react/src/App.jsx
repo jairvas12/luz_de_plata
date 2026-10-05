@@ -1,24 +1,26 @@
 // componentes
 
-import Cabecera from './components/Cabecera'
-import Pie from './components/Pie'
-import Nav from './components/Nav'
+import Cabecera from "./components/Cabecera";
+import Pie from "./components/Pie";
+import Nav from "./components/Nav";
 
 // paginas
-import Home from './pages/Home'
-import Blog from './pages/Blog'
-import Blog1 from './pages/Blog1'
-import Blog2 from './pages/Blog2'
-import Envios from './pages/Envios'
-import Compra_Exitosa from './pages/Compra_Exitosa'
-import MasVendidos from './pages/MasVendidos'
-import Conocenos from './pages/Conocenos'
-import Contacto from './pages/Contacto'
-import Catalogo from './pages/Catalogo'
-import Login from './pages/Login'
-import MisCompras from './pages/MisCompras'
-import MisEnvios from './pages/MisEnvios'
-import { Routes, Route } from 'react-router-dom'
+import Home from "./pages/Home";
+import Blog from "./pages/Blog";
+import Blog1 from "./pages/Blog1";
+import Blog2 from "./pages/Blog2";
+import Envios from "./pages/Envios";
+import Compra_Exitosa from "./pages/Compra_Exitosa";
+import MasVendidos from "./pages/MasVendidos";
+import Conocenos from "./pages/Conocenos";
+import Contacto from "./pages/Contacto";
+import Catalogo from "./pages/Catalogo";
+import Login from "./pages/Login";
+import MisCompras from "./pages/MisCompras";
+import MisEnvios from "./pages/MisEnvios";
+import { Routes, Route } from "react-router-dom";
+import DetalleProducto from "./pages/DetalleProducto";
+
 function App() {
   return (
     <>
@@ -38,10 +40,11 @@ function App() {
         <Route path="/Login" element={<Login />} />
         <Route path="/MisCompras" element={<MisCompras />} />
         <Route path="/MisEnvios" element={<MisEnvios />} />
+        <Route path="/producto/:id" element={<DetalleProducto />} />
       </Routes>
       <Pie />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
