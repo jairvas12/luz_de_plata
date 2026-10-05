@@ -1,0 +1,38 @@
+footer {
+  margin-top:55px;
+  background:#171717;
+  color:#f5f5f5;
+}
+.pie {
+  width:min(1180px,calc(100% - 32px));
+  margin:0 auto;
+  padding:36px 0;
+  display:grid;
+  grid-template-columns:1.2fr 1fr 1fr;
+  gap:28px;
+}
+.pie h2,.pie h3 {
+  font-weight:500;
+  margin-top:0;
+}
+.pie p,.pie a {
+  color:#d8d8d8;
+}
+.pie a {
+  text-decoration:none;
+}
+.pie a:hover {
+  text-decoration:underline;
+}
+.pie__base {
+  border-top:1px solid #333;
+  padding:14px 16px;
+  text-align:center;
+  color:#aaa;
+  font-size:.85rem;
+}
+@media(max-width:700px) {
+  .pie {
+    grid-template-columns:1fr
+  }
+}

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="es">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Panel principal | Admin Luz de Plata
+  </title>
+  <link href="../css/estilos.css" rel="stylesheet"/>
+  <link href="../css/admin.css" rel="stylesheet"/>
+ </head>
+ <body class="admin-body" data-page="dashboard">
+  <div class="admin-shell">
+   <aside class="admin-sidebar">
+    <a class="admin-brand" href="index.html">
+     Luz de Plata
+     <br/>
+     <small>
+      Administración
+     </small>
+    </a>
+    <nav class="admin-menu">
+     <a class="activo" href="index.html">
+      Inicio
+     </a>
+     <a href="productos.html">
+      Productos
+     </a>
+     <a href="ordenes.html">
+      Órdenes
+     </a>
+     <a data-admin-only="" href="producto-nuevo.html">
+      Nuevo producto
+     </a>
+     <a data-admin-only="" href="usuarios.html">
+      Usuarios
+     </a>
+     <a data-admin-only="" href="usuario-nuevo.html">
+      Nuevo usuario
+     </a>
+    </nav>
+    <div class="admin-sidebar__pie">
+     <a class="boton boton--claro" href="../index.html">
+      Ver tienda
+     </a>
+     <button class="boton boton--suave" data-admin-logout="">
+      Cerrar sesión
+     </button>
+    </div>
+   </aside>
+   <main class="admin-main">
+    <header class="admin-topbar">
+     <strong>
+      Panel principal
+     </strong>
+     <span data-admin-user="">
+     </span>
+    </header>
+    <section class="admin-contenido">
+     <div data-dashboard="">
+      <h1>
+       Hola, administrador
+      </h1>
+      <p class="muted">
+       Resumen de la información almacenada localmente en este navegador.
+      </p>
+      <div class="metricas">
+       <article class="metrica">
+        Productos
+        <strong data-m-products="">
+         0
+        </strong>
+       </article>
+       <article class="metrica" data-admin-only="">
+        Usuarios
+        <strong data-m-users="">
+         0
+        </strong>
+       </article>
+       <article class="metrica">
+        Compras
+        <strong data-m-orders="">
+         0
+        </strong>
+       </article>
+       <article class="metrica">
+        Stock crítico
+        <strong data-m-critical="">
+         0
+        </strong>
+       </article>
+      </div>
+      <section class="admin-card" style="margin-top:24px">
+       <h2>
+        Alcance de esta entrega
+       </h2>
+       <p>
+        El administrador puede crear, editar y eliminar productos y usuarios. El vendedor puede visualizar productos y órdenes, pero no puede crear, editar o eliminar productos ni administrar usuarios.
+       </p>
+       <p>
+        <strong>
+         Importante:
+        </strong>
+        localStorage es una persistencia local de demostración; no reemplaza una base de datos ni seguridad de servidor.
+       </p>
+      </section>
+     </div>
+    </section>
+   </main>
+  </div>
+  <script src="../js/storage.js">
+  </script>
+  <script src="../js/regiones-comunas.js">
+  </script>
+  <script src="../js/validaciones.js">
+  </script>
+  <script src="../js/productos.js">
+  </script>
+  <script src="../js/usuarios.js">
+  </script>
+  <script src="../js/admin.js">
+  </script>
+ </body>
+</html>

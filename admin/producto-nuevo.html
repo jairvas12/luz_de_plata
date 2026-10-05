@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="es">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Nuevo producto | Admin Luz de Plata
+  </title>
+  <link href="../css/estilos.css" rel="stylesheet"/>
+  <link href="../css/admin.css" rel="stylesheet"/>
+ </head>
+ <body class="admin-body" data-page="producto-nuevo">
+  <div class="admin-shell">
+   <aside class="admin-sidebar">
+    <a class="admin-brand" href="index.html">
+     Luz de Plata
+     <br/>
+     <small>
+      Administración
+     </small>
+    </a>
+    <nav class="admin-menu">
+     <a href="index.html">
+      Inicio
+     </a>
+     <a href="productos.html">
+      Productos
+     </a>
+     <a href="ordenes.html">
+      Órdenes
+     </a>
+     <a class="activo" data-admin-only="" href="producto-nuevo.html">
+      Nuevo producto
+     </a>
+     <a data-admin-only="" href="usuarios.html">
+      Usuarios
+     </a>
+     <a data-admin-only="" href="usuario-nuevo.html">
+      Nuevo usuario
+     </a>
+    </nav>
+    <div class="admin-sidebar__pie">
+     <a class="boton boton--claro" href="../index.html">
+      Ver tienda
+     </a>
+     <button class="boton boton--suave" data-admin-logout="">
+      Cerrar sesión
+     </button>
+    </div>
+   </aside>
+   <main class="admin-main">
+    <header class="admin-topbar">
+     <strong>
+      Nuevo producto
+     </strong>
+     <span data-admin-user="">
+     </span>
+    </header>
+    <section class="admin-contenido">
+     <h1>
+      Nuevo producto
+     </h1>
+     <form class="admin-card formulario form-grid" id="producto-form" novalidate="">
+      <div class="campo">
+       <label for="admin-code">
+        Código producto *
+       </label>
+       <input id="admin-code" minlength="3" name="code" required=""/>
+       <span class="error-campo">
+       </span>
+      </div>
+      <div class="campo">
+       <label for="admin-name">
+        Nombre *
+       </label>
+       <input autocomplete="given-name" id="admin-name" maxlength="100" name="name" required=""/>
+       <span class="error-campo">
+       </span>
+      </div>
+      <div class="campo campo--completo">
+       <label for="admin-description">
+        Descripción
+       </label>
+       <textarea id="admin-description" maxlength="500" name="description"></textarea>
+       <span class="error-campo">
+       </span>
+      </div>
+      <div class="campo">
+       <label for="admin-price">
+        Precio *
+       </label>
+       <input id="admin-price" min="0" name="price" required="" step="0.01" type="number"/>
+       <span class="error-campo">
+       </span>
+      </div>
+      <div class="campo">
+       <label for="admin-stock">
+        Stock *
+       </label>
+       <input id="admin-stock" min="0" name="stock" required="" step="1" type="number"/>
+       <span class="error-campo">
+       </span>
+      </div>
+      <div class="campo">
+       <label for="admin-criticalStock">
+        Stock crítico
+       </label>
+       <input id="admin-criticalStock" min="0" name="criticalStock" step="1" type="number"/>
+       <span class="error-campo">
+       </span>
+      </div>
+      <div class="campo">
+       <label for="admin-category">
+        Categoría *
+       </label>
+       <select id="admin-category" name="category" required="">
+        <option value="">
+         Selecciona
+        </option>
+        <option>
+         Aros
+        </option>
+        <option>
+         Cadenas
+        </option>
+        <option>
+         Pulseras
+        </option>
+        <option>
+         Dijes
+        </option>
+        <option>
+         Conjuntos
+        </option>
+       </select>
+       <span class="error-campo">
+       </span>
+      </div>
+      <div class="campo campo--completo">
+       <label for="admin-image">
+        Imagen (ruta local opcional)
+       </label>
+       <input id="admin-image" name="image" placeholder="img/aros/1.webp"/>
+       <span class="ayuda">
+        Ejemplo: img/pulseras/19.webp
+       </span>
+       <span class="error-campo">
+       </span>
+      </div>
+      <div class="campo campo--completo form-acciones">
+       <button class="boton" type="submit">
+        Guardar producto
+       </button>
+       <a class="boton boton--claro" href="productos.html">
+        Cancelar
+       </a>
+      </div>
+     </form>
+    </section>
+   </main>
+  </div>
+  <script src="../js/storage.js">
+  </script>
+  <script src="../js/regiones-comunas.js">
+  </script>
+  <script src="../js/validaciones.js">
+  </script>
+  <script src="../js/productos.js">
+  </script>
+  <script src="../js/usuarios.js">
+  </script>
+  <script src="../js/admin.js">
+  </script>
+ </body>
+</html>
