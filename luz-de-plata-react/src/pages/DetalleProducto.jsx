@@ -35,7 +35,7 @@ function DetalleProducto() {
               {producto.category}
             </span>
 
-            <h1>{producto.name}</h1>
+            <h1 className="producto-card__categoria">{producto.name}</h1>
 
             <p>Código: {producto.code}</p>
 
