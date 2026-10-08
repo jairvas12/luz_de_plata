@@ -20,6 +20,7 @@ import MisCompras from "./pages/MisCompras";
 import MisEnvios from "./pages/MisEnvios";
 import { Routes, Route } from "react-router-dom";
 import DetalleProducto from "./pages/DetalleProducto";
+import Carrito from "./pages/Carrito";
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
         <Route path="/MisCompras" element={<MisCompras />} />
         <Route path="/MisEnvios" element={<MisEnvios />} />
         <Route path="/producto/:id" element={<DetalleProducto />} />
+        <Route path="/Carrito" element={<Carrito />} />
       </Routes>
       <Pie />
     </>

@@ -1,5 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import productos from "../data/productos";
+import { agregarAlCarrito } from "../utils/carrito";
 import "../css/estilos.css";
 
 function DetalleProducto() {
@@ -51,6 +52,7 @@ function DetalleProducto() {
                 type="button"
                 className="boton"
                 disabled={producto.stock <= 0}
+                onClick={() => agregarAlCarrito(producto)}
               >
                 {producto.stock <= 0 ? "Sin stock" : "Añadir al carrito"}
               </button>
