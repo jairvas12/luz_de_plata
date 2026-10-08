@@ -25,7 +25,7 @@ function Home() {
                         Descubre piezas seleccionadas para regalar, celebrar y acompañarte
                         todos los días.
                     </p>
-                    <a className="boton boton--claro" href="catalogo.html">
+                    <a className="boton boton--claro" href="/Catalogo">
                         Ver catálogo
                     </a>
                 </div>

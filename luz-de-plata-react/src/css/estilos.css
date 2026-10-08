@@ -171,10 +171,11 @@ main {
 }
 .categoria-chip {
   border:1px solid var(--borde);
-  background:white;
+  background: white;
   padding:9px 15px;
   border-radius:999px;
   text-decoration:none;
+  color: #111;
 }
 .categoria-chip.activo, .categoria-chip:hover {
   border-color:var(--tinta);
@@ -260,6 +261,7 @@ main {
   justify-content:space-between;
   flex-wrap:wrap;
   margin:16px 0 26px;
+  color: #111;
 }
 .toolbar__grupo {
   display:flex;
@@ -271,6 +273,7 @@ main {
   border:1px solid var(--borde);
   border-radius:10px;
   background:white;
+  color: #111;
 }
 .mensaje-vacio {
   padding:35px;
