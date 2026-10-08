@@ -54,11 +54,11 @@ function Cabecera() {
           </div>
 
           <div className="acciones">
-            <a className="accion" href="favoritos.html">
+            <Link className="accion" to="/Favoritos">
               <span className="accion__icono">♡</span>
 
               <span className="accion__texto">Favoritos</span>
-            </a>
+            </Link>
 
             <Link className="accion" to="/Login">
               <span className="accion__icono">♙</span>

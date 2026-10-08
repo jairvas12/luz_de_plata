@@ -21,6 +21,7 @@ import MisEnvios from "./pages/MisEnvios";
 import { Routes, Route } from "react-router-dom";
 import DetalleProducto from "./pages/DetalleProducto";
 import Carrito from "./pages/Carrito";
+import Favoritos from "./pages/Favoritos";
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
         <Route path="/MisEnvios" element={<MisEnvios />} />
         <Route path="/producto/:id" element={<DetalleProducto />} />
         <Route path="/Carrito" element={<Carrito />} />
+        <Route path="/Favoritos" element={<Favoritos />} />
       </Routes>
       <Pie />
     </>
