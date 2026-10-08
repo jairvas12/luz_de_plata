@@ -21,7 +21,7 @@ function Compra_Exitosa() {
                         </span>
                     </p>
                     <p>
-                        <a className="boton" href="mis_compras.html">
+                        <a className="boton" href="/Carrito">
                             Ver mis compras
                         </a>
                         <a className="boton boton--claro" href="/">
