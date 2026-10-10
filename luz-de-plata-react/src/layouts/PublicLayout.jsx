@@ -10,7 +10,7 @@ import Nav
 
 import Pie
   from "../components/Pie";
-
+import LateralAdmin from "../components/LateralAdmin";
 
 function PublicLayout() {
 
@@ -20,7 +20,6 @@ function PublicLayout() {
       <Cabecera />
 
       <Nav />
-
       <Outlet />
 
       <Pie />

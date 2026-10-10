@@ -1,27 +1,17 @@
 import {
   Outlet
 } from "react-router-dom";
-
-import AdminMenu
-  from "../components/AdminMenu";
-
+import "../css/estilos.css";
+import LateralAdmin from "../components/LateralAdmin";
 
 function AdminLayout() {
 
   return (
-    <div className="admin-layout">
-
-      <AdminMenu />
-
-      <main className="admin-contenido">
-
+    <>
+        <LateralAdmin />
         <Outlet />
-
-      </main>
-
-    </div>
-  );
-
+    </>
+  )     
 }
 
 

@@ -21,6 +21,7 @@ import MisEnvios from "./pages/MisEnvios";
 import DetalleProducto from "./pages/DetalleProducto";
 import Carrito from "./pages/Carrito";
 import Favoritos from "./pages/Favoritos";
+import AdminMenu from "./components/AdminMenu";
 
 import { Routes, Route } from "react-router-dom";
 import PublicLayout from "./layouts/PublicLayout";
@@ -49,7 +50,7 @@ function App() {
           <Route path="/Favoritos" element={<Favoritos />} />
         </Route>
         <Route path="/admin" element={<AdminLayout/>}>
-
+          <Route element={<AdminMenu />} />
         </Route>
       </Routes>
     </>
