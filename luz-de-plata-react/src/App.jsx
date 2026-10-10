@@ -18,35 +18,40 @@ import Catalogo from "./pages/Catalogo";
 import Login from "./pages/Login";
 import MisCompras from "./pages/MisCompras";
 import MisEnvios from "./pages/MisEnvios";
-import { Routes, Route } from "react-router-dom";
 import DetalleProducto from "./pages/DetalleProducto";
 import Carrito from "./pages/Carrito";
 import Favoritos from "./pages/Favoritos";
 
+import { Routes, Route } from "react-router-dom";
+import PublicLayout from "./layouts/PublicLayout";
+import AdminLayout from "./layouts/AdminLayout";
+
 function App() {
   return (
     <>
-      <Cabecera />
-      <Nav></Nav>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/Blog" element={<Blog />} />
-        <Route path="/Blog1" element={<Blog1 />} />
-        <Route path="/Blog2" element={<Blog2 />} />
-        <Route path="/Envios" element={<Envios />} />
-        <Route path="/Compra_Exitosa" element={<Compra_Exitosa />} />
-        <Route path="/MasVendidos" element={<MasVendidos />} />
-        <Route path="/Conocenos" element={<Conocenos />} />
-        <Route path="/Contacto" element={<Contacto />} />
-        <Route path="/Catalogo" element={<Catalogo />} />
-        <Route path="/Login" element={<Login />} />
-        <Route path="/MisCompras" element={<MisCompras />} />
-        <Route path="/MisEnvios" element={<MisEnvios />} />
-        <Route path="/producto/:id" element={<DetalleProducto />} />
-        <Route path="/Carrito" element={<Carrito />} />
-        <Route path="/Favoritos" element={<Favoritos />} />
+        <Route element={<PublicLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/Blog" element={<Blog />} />
+          <Route path="/Blog1" element={<Blog1 />} />
+          <Route path="/Blog2" element={<Blog2 />} />
+          <Route path="/Envios" element={<Envios />} />
+          <Route path="/Compra_Exitosa" element={<Compra_Exitosa />} />
+          <Route path="/MasVendidos" element={<MasVendidos />} />
+          <Route path="/Conocenos" element={<Conocenos />} />
+          <Route path="/Contacto" element={<Contacto />} />
+          <Route path="/Catalogo" element={<Catalogo />} />
+          <Route path="/Login" element={<Login />} />
+          <Route path="/MisCompras" element={<MisCompras />} />
+          <Route path="/MisEnvios" element={<MisEnvios />} />
+          <Route path="/producto/:id" element={<DetalleProducto />} />
+          <Route path="/Carrito" element={<Carrito />} />
+          <Route path="/Favoritos" element={<Favoritos />} />
+        </Route>
+        <Route path="/admin" element={<AdminLayout/>}>
+
+        </Route>
       </Routes>
-      <Pie />
     </>
   );
 }
