@@ -21,8 +21,11 @@ import MisEnvios from "./pages/MisEnvios";
 import DetalleProducto from "./pages/DetalleProducto";
 import Carrito from "./pages/Carrito";
 import Favoritos from "./pages/Favoritos";
-import AdminInicio from "./pages/admin/Admininicio";
 import Registro from "./pages/Registro";
+
+// admin
+import AdminInicio from "./pages/admin/Admininicio";
+import ProductosAdmin from "./pages/admin/ProductosAdmin";
 
 import { Routes, Route } from "react-router-dom";
 import PublicLayout from "./layouts/PublicLayout";
@@ -53,6 +56,7 @@ function App() {
         </Route>
         <Route path="/admin" element={<AdminLayout/>}>
           <Route index element={<AdminInicio />} />
+          <Route path="productos" element={<ProductosAdmin/>}/>
         </Route>
       </Routes>
     </>
