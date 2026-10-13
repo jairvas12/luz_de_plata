@@ -22,6 +22,7 @@ import DetalleProducto from "./pages/DetalleProducto";
 import Carrito from "./pages/Carrito";
 import Favoritos from "./pages/Favoritos";
 import AdminMenu from "./components/AdminMenu";
+import Registro from "./pages/Registro";
 
 import { Routes, Route } from "react-router-dom";
 import PublicLayout from "./layouts/PublicLayout";
@@ -48,6 +49,7 @@ function App() {
           <Route path="/producto/:id" element={<DetalleProducto />} />
           <Route path="/Carrito" element={<Carrito />} />
           <Route path="/Favoritos" element={<Favoritos />} />
+          <Route path="/Registro" element={<Registro />} />
         </Route>
         <Route path="/admin" element={<AdminLayout/>}>
           <Route element={<AdminMenu />} />

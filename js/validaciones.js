@@ -13,7 +13,7 @@ function validarEmail(input, required = true) {
   if (v.length > 100) return setError(input, "Máximo 100 caracteres.");
   if (v && !LP.allowedEmail(v)) return setError(input, "Usa un correo @duoc.cl, @profesor.duoc.cl o @gmail.com.");
   return setError(input, "");
-}
+} 
 function validarPassword(input, required = true) {
   const v = input.value;
   if (required && !v) return setError(input, "La contraseña es requerida.");
