@@ -43,9 +43,7 @@ function Pie() {
         </section>
       </div>
 
-      <div className="pie__base">
-        © 2026 Luz de Plata
-      </div>
+      <div className="pie__base">© 2026 Luz de Plata</div>
     </footer>
   );
 }

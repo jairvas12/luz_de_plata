@@ -609,3 +609,23 @@ main {
 .panel h2 {
   color: #111;
 }
+
+.formulario select,
+.formulario input,
+.formulario textarea {
+  color: #111;
+  background-color: #fff;
+}
+
+.formulario select option {
+  color: #111;
+  background-color: #fff;
+}
+
+.formulario input[type="checkbox"] {
+  accent-color: #1e1e1e;
+}
+
+.formulario label {
+  color: #111;
+}
