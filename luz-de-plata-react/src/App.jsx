@@ -27,6 +27,7 @@ import Registro from "./pages/Registro";
 import AdminInicio from "./pages/admin/Admininicio";
 import ProductosAdmin from "./pages/admin/ProductosAdmin";
 import ProductoNuevo from "./pages/admin/ProductoNuevo";
+import ProductoEditar from "./pages/admin/ProductoEditar";
 
 import { Routes, Route } from "react-router-dom";
 import PublicLayout from "./layouts/PublicLayout";
@@ -59,6 +60,7 @@ function App() {
           <Route index element={<AdminInicio />} />
           <Route path="productos" element={<ProductosAdmin/>}/>
           <Route path="productos/nuevo" element={<ProductoNuevo/>}/>
+          <Route path="productos/editar/:id" element={<ProductoEditar/>}/>
         </Route>
       </Routes>
     </>

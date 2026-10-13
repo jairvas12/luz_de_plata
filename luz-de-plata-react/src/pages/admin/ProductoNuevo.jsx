@@ -22,33 +22,15 @@ function ProductoNuevo() {
     });
 
 
-  const [errores, setErrores] =
-    useState({});
-
-
-  const [mensaje, setMensaje] =
-    useState("");
+  const [errores, setErrores] = useState({});
+  const [mensaje, setMensaje] = useState("");
 
 
   function manejarCambio(evento) {
 
-    const {
-      name,
-      value
-    } = evento.target;
-
-
-    setFormulario({
-      ...formulario,
-      [name]: value
-    });
-
-
-    setErrores({
-      ...errores,
-      [name]: ""
-    });
-
+    const {name, value} = evento.target;
+    setFormulario({...formulario,[name]: value});
+    setErrores({...errores,[name]: ""});
   }
 
 
@@ -72,20 +54,15 @@ function ProductoNuevo() {
     if (
       !formulario.name.trim()
     ) {
-
       nuevosErrores.name =
         "El nombre es requerido.";
-
     }
     else if (
       formulario.name.length > 100
     ) {
-
       nuevosErrores.name =
         "Máximo 100 caracteres.";
-
     }
-
 
     if (
       formulario.description.length > 500
@@ -95,7 +72,6 @@ function ProductoNuevo() {
         "Máximo 500 caracteres.";
 
     }
-
 
     if (
       formulario.price === ""
