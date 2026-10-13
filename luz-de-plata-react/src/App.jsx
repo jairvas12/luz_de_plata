@@ -21,7 +21,7 @@ import MisEnvios from "./pages/MisEnvios";
 import DetalleProducto from "./pages/DetalleProducto";
 import Carrito from "./pages/Carrito";
 import Favoritos from "./pages/Favoritos";
-import AdminMenu from "./components/AdminMenu";
+import AdminInicio from "./pages/admin/Admininicio";
 import Registro from "./pages/Registro";
 
 import { Routes, Route } from "react-router-dom";
@@ -52,7 +52,7 @@ function App() {
           <Route path="/Registro" element={<Registro />} />
         </Route>
         <Route path="/admin" element={<AdminLayout/>}>
-          <Route element={<AdminMenu />} />
+          <Route index element={<AdminInicio />} />
         </Route>
       </Routes>
     </>

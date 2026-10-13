@@ -5,10 +5,20 @@ body.admin-body {
   background:#f3f4f5;
   font-family:Arial,Helvetica,sans-serif;
 }
+.admin-contenido h1 {
+  font-family: Georgia, serif;
+  font-weight: 500;
+  font-size: 2rem;
+  margin: 0 0 18px;
+  color: #1e1e1e;
+}
 .admin-shell {
   display:grid;
   grid-template-columns:var(--admin-sidebar) minmax(0,1fr);
   min-height:100vh;
+  background: #f3f4f5;
+  font-family: Arial,Helvetica,sans-serif;
+  text-align: left;
 }
 .admin-sidebar {
   background:#181818;
