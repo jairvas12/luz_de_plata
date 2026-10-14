@@ -32,6 +32,7 @@ import OrdenesAdmin from "./pages/admin/OrdenesAdmin";
 import OrdenDetalle from "./pages/admin/OrdenDetalle";
 import UsuariosAdmin from "./pages/admin/UsuarioAdmin";
 import UsuarioNuevo from "./pages/admin/UsuarioNuevo";
+import UsuarioEditar from "./pages/admin/UsuarioEditar";
 
 import { Routes, Route } from "react-router-dom";
 import PublicLayout from "./layouts/PublicLayout";
@@ -69,6 +70,7 @@ function App() {
           <Route path="ordenes/:id" element={<OrdenDetalle />} />
           <Route path="usuarios" element={<UsuariosAdmin />} />
           <Route path="usuarios/nuevo" element={<UsuarioNuevo />} />
+          <Route path="usuarios/editar/:id" element={<UsuarioEditar />} />
         </Route>
       </Routes>
     </>
