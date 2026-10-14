@@ -30,6 +30,8 @@ import ProductoNuevo from "./pages/admin/ProductoNuevo";
 import ProductoEditar from "./pages/admin/ProductoEditar";
 import OrdenesAdmin from "./pages/admin/OrdenesAdmin";
 import OrdenDetalle from "./pages/admin/OrdenDetalle";
+import UsuariosAdmin from "./pages/admin/UsuarioAdmin";
+import UsuarioNuevo from "./pages/admin/UsuarioNuevo";
 
 import { Routes, Route } from "react-router-dom";
 import PublicLayout from "./layouts/PublicLayout";
@@ -58,13 +60,15 @@ function App() {
           <Route path="/Favoritos" element={<Favoritos />} />
           <Route path="/Registro" element={<Registro />} />
         </Route>
-        <Route path="/admin" element={<AdminLayout/>}>
+        <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminInicio />} />
-          <Route path="productos" element={<ProductosAdmin/>}/>
-          <Route path="productos/nuevo" element={<ProductoNuevo/>}/>
-          <Route path="productos/editar/:id" element={<ProductoEditar/>}/>
-          <Route path="ordenes" element={<OrdenesAdmin/>}/>
-          <Route path="ordenes/:id" element={<OrdenDetalle/>}/>
+          <Route path="productos" element={<ProductosAdmin />} />
+          <Route path="productos/nuevo" element={<ProductoNuevo />} />
+          <Route path="productos/editar/:id" element={<ProductoEditar />} />
+          <Route path="ordenes" element={<OrdenesAdmin />} />
+          <Route path="ordenes/:id" element={<OrdenDetalle />} />
+          <Route path="usuarios" element={<UsuariosAdmin />} />
+          <Route path="usuarios/nuevo" element={<UsuarioNuevo />} />
         </Route>
       </Routes>
     </>
