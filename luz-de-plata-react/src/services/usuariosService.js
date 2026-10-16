@@ -1,36 +1,43 @@
+import { obtenerUsuarios } from "../utils/usuarios";
 
-export function iniciarSesion(
-  email,
-  password
-) {
+const CLAVE_SESION = "sesion";
 
-  const usuario =
-    usuarios.find(
-      usuario =>
-        usuario.email
-          .toLowerCase()
-          ===
-        email
-          .trim()
-          .toLowerCase()
-        &&
-        usuario.password
-          === password
-        &&
-        usuario.active
-          !== false
-    );
+export function iniciarSesion(email, password) {
+  const usuarios = obtenerUsuarios();
+
+  const usuario = usuarios.find(
+    (usuario) =>
+      usuario.email.toLowerCase() === email.trim().toLowerCase() &&
+      usuario.password === password &&
+      usuario.active !== false,
+  );
 
   if (!usuario) {
     return null;
   }
 
-  return {
+  const sesion = {
     id: usuario.id,
     name: usuario.name,
-    surname: usuario.surname,
     email: usuario.email,
-    role: usuario.role
+    role: usuario.role,
   };
 
+  localStorage.setItem(CLAVE_SESION, JSON.stringify(sesion));
+
+  return sesion;
+}
+
+export function obtenerSesion() {
+  const sesionGuardada = localStorage.getItem(CLAVE_SESION);
+
+  if (!sesionGuardada) {
+    return null;
+  }
+
+  return JSON.parse(sesionGuardada);
+}
+
+export function cerrarSesion() {
+  localStorage.removeItem(CLAVE_SESION);
 }

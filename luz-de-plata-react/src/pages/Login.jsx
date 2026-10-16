@@ -6,7 +6,6 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { iniciarSesion } from "../services/usuariosService.js";
 
-
 function Login() {
   const navigate = useNavigate();
 
@@ -91,12 +90,11 @@ function Login() {
     }
 
     if (sesion.role === "Administrador" || sesion.role === "Vendedor") {
-      console.log("Usuario administrativo:", sesion);
-
-      navigate("/");
-
+      navigate("/admin");
       return;
     }
+
+    navigate("/");
 
     navigate("/");
   }
@@ -111,8 +109,7 @@ function Login() {
             Inicio de sesión
           </Link>
 
-          <Link to="/Registro">Crear cuenta
-          </Link>
+          <Link to="/Registro">Crear cuenta</Link>
         </div>
 
         <form
