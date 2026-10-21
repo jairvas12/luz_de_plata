@@ -42,8 +42,8 @@ function UsuariosAdmin() {
           {usuarios.length === 0 ? (
             <div className="mensaje-vacio">No hay usuarios registrados.</div>
           ) : (
-            <div className="tabla-responsive">
-              <table className="tabla-admin">
+            <div className="table-responsive">
+              <table className="table table-striped table-hover align-middle">  -- codigo de tabla responsiva 
                 <thead>
                   <tr>
                     <th>ID</th>

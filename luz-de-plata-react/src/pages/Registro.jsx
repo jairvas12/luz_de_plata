@@ -156,10 +156,13 @@ function Registro() {
           >
             <h2>Registro</h2>
 
-            <div className="campo">
-              <label htmlFor="registro-nombre">Nombre *</label>
+            <div className="campo mb-3">
+              <label htmlFor="registro-nombre" className="form-label">
+                Nombre *
+              </label>
 
               <input
+                className="form-control"
                 id="registro-nombre"
                 maxLength="100"
                 value={nombre}
@@ -169,10 +172,13 @@ function Registro() {
               <span className="error-campo">{errores.nombre}</span>
             </div>
 
-            <div className="campo">
-              <label htmlFor="registro-apellidos">Apellidos *</label>
+            <div className="campo mb-3">
+              <label htmlFor="registro-apellidos" className="form-label">
+                Apellidos *
+              </label>
 
               <input
+                className="form-control"
                 id="registro-apellidos"
                 maxLength="100"
                 value={apellidos}
@@ -182,10 +188,13 @@ function Registro() {
               <span className="error-campo">{errores.apellidos}</span>
             </div>
 
-            <div className="campo">
-              <label htmlFor="registro-email">Correo *</label>
+            <div className="campo mb-3">
+              <label htmlFor="registro-email" className="form-label">
+                Correo *
+              </label>
 
               <input
+                className="form-control"
                 id="registro-email"
                 type="email"
                 maxLength="100"
@@ -196,10 +205,13 @@ function Registro() {
               <span className="error-campo">{errores.email}</span>
             </div>
 
-            <div className="campo">
-              <label htmlFor="registro-fecha">Fecha de nacimiento *</label>
+            <div className="campo mb-3">
+              <label htmlFor="registro-fecha" className="form-label">
+                Fecha de nacimiento *
+              </label>
 
               <input
+                className="form-control"
                 id="registro-fecha"
                 type="date"
                 value={fechaNacimiento}
@@ -209,10 +221,13 @@ function Registro() {
               <span className="error-campo">{errores.fechaNacimiento}</span>
             </div>
 
-            <div className="campo">
-              <label htmlFor="registro-region">Región *</label>
+            <div className="campo mb-3">
+              <label htmlFor="registro-region" className="form-label">
+                Región *
+              </label>
 
               <select
+                className="form-select"
                 id="registro-region"
                 value={region}
                 onChange={cambiarRegion}
@@ -229,10 +244,13 @@ function Registro() {
               <span className="error-campo">{errores.region}</span>
             </div>
 
-            <div className="campo">
-              <label htmlFor="registro-comuna">Comuna *</label>
+            <div className="campo mb-3">
+              <label htmlFor="registro-comuna" className="form-label">
+                Comuna *
+              </label>
 
               <select
+                className="form-select"
                 id="registro-comuna"
                 value={comuna}
                 onChange={(e) => setComuna(e.target.value)}
@@ -250,10 +268,13 @@ function Registro() {
               <span className="error-campo">{errores.comuna}</span>
             </div>
 
-            <div className="campo">
-              <label htmlFor="registro-direccion">Dirección *</label>
+            <div className="campo mb-3">
+              <label htmlFor="registro-direccion" className="form-label">
+                Dirección *
+              </label>
 
               <input
+                className="form-control"
                 id="registro-direccion"
                 maxLength="150"
                 value={direccion}
@@ -263,10 +284,13 @@ function Registro() {
               <span className="error-campo">{errores.direccion}</span>
             </div>
 
-            <div className="campo">
-              <label htmlFor="registro-password">Contraseña *</label>
+            <div className="campo mb-3">
+              <label htmlFor="registro-password" className="form-label">
+                Contraseña *
+              </label>
 
               <input
+                className="form-control"
                 id="registro-password"
                 type="password"
                 value={password}
@@ -278,10 +302,13 @@ function Registro() {
               <span className="error-campo">{errores.password}</span>
             </div>
 
-            <div className="campo">
-              <label htmlFor="registro-confirmar">Confirmar contraseña *</label>
+            <div className="campo mb-3">
+              <label htmlFor="registro-confirmar" className="form-label">
+                Confirmar contraseña *
+              </label>
 
               <input
+                className="form-control"
                 id="registro-confirmar"
                 type="password"
                 value={confirmPassword}
@@ -291,26 +318,33 @@ function Registro() {
               <span className="error-campo">{errores.confirmPassword}</span>
             </div>
 
-            <div className="campo">
-              <label>
+            <div className="campo mb-3">
+              <div className="form-check">
                 <input
+                  className="form-check-input"
+                  id="registro-terminos"
                   type="checkbox"
                   checked={aceptaTerminos}
                   onChange={(e) => setAceptaTerminos(e.target.checked)}
                 />
-                Acepto los términos y condiciones
-              </label>
+
+                <label className="form-check-label" htmlFor="registro-terminos">
+                  Acepto los términos y condiciones
+                </label>
+              </div>
 
               <span className="error-campo">{errores.terminos}</span>
             </div>
 
-            <button className="boton" type="submit">
+            <button className="boton btn btn-dark w-100" type="submit">
               Crear cuenta
             </button>
 
-            {mensajeExito && <p className="mensaje-exito">{mensajeExito}</p>}
+            {mensajeExito && (
+              <p className="mensaje-exito mt-3">{mensajeExito}</p>
+            )}
 
-            <p>
+            <p className="mt-3 mb-0">
               ¿Ya tienes cuenta? <Link to="/Login">Iniciar sesión</Link>
             </p>
           </form>

@@ -86,7 +86,7 @@ function Contacto() {
       </section>
 
       <section className="seccion--corta">
-        <div className="contenedor">
+        <div className="contenedor">  -- aca añadimos el responsive 
           <div className="row g-4">
             <div className="col-12 col-lg-7">
               <form
