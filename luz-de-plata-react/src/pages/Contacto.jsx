@@ -86,87 +86,96 @@ function Contacto() {
       </section>
 
       <section className="seccion--corta">
-        <div className="contenedor dos-columnas">
-          <form
-            className="panel formulario"
-            onSubmit={enviarFormulario}
-            noValidate
-          >
-            <h2>Formulario de contacto</h2>
+        <div className="contenedor">
+          <div className="row g-4">
+            <div className="col-12 col-lg-7">
+              <form
+                className="panel formulario"
+                onSubmit={enviarFormulario}
+                noValidate
+              >
+                <h2>Formulario de contacto</h2>
 
-            <div className="campo">
-              <label htmlFor="contact-name">Nombre *</label>
+                <div className="campo">
+                  <label htmlFor="contact-name">Nombre *</label>
 
-              <input
-                autoComplete="name"
-                id="contact-name"
-                maxLength="100"
-                name="name"
-                value={nombre}
-                onChange={(e) => setNombre(e.target.value)}
-              />
+                  <input
+                    autoComplete="name"
+                    id="contact-name"
+                    maxLength="100"
+                    name="name"
+                    value={nombre}
+                    onChange={(e) => setNombre(e.target.value)}
+                  />
 
-              <span className="error-campo">{errores.nombre}</span>
+                  <span className="error-campo">{errores.nombre}</span>
+                </div>
+
+                <div className="campo">
+                  <label htmlFor="contact-email">Correo</label>
+
+                  <input
+                    autoComplete="email"
+                    id="contact-email"
+                    maxLength="100"
+                    name="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+
+                  <span className="error-campo">{errores.email}</span>
+                </div>
+
+                <div className="campo">
+                  <label htmlFor="comment">Comentario *</label>
+
+                  <textarea
+                    id="comment"
+                    maxLength="500"
+                    name="comment"
+                    value={comentario}
+                    onChange={(e) => setComentario(e.target.value)}
+                  />
+
+                  <span className="ayuda">Máximo 500 caracteres.</span>
+
+                  <span className="error-campo">{errores.comentario}</span>
+                </div>
+
+                <button className="boton" type="submit">
+                  Enviar mensaje
+                </button>
+
+                {mensajeExito && (
+                  <p className="mensaje-exito">{mensajeExito}</p>
+                )}
+              </form>
             </div>
 
-            <div className="campo">
-              <label htmlFor="contact-email">Correo</label>
+            <div className="col-12 col-lg-5">
+              <aside className="panel">
+                <h2>Atención Luz de Plata</h2>
 
-              <input
-                autoComplete="email"
-                id="contact-email"
-                maxLength="100"
-                name="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+                <p>
+                  Respondemos consultas sobre productos, disponibilidad y
+                  envíos.
+                </p>
 
-              <span className="error-campo">{errores.email}</span>
+                <p>
+                  <strong>Horario:</strong>
+                  <br />
+                  Lunes a viernes, 10:00 a 18:00.
+                </p>
+
+                <p>
+                  <strong>Correo:</strong>
+                  <br />
+                  contacto@luzdeplata.cl
+                </p>
+              </aside>
             </div>
-
-            <div className="campo">
-              <label htmlFor="comment">Comentario *</label>
-
-              <textarea
-                id="comment"
-                maxLength="500"
-                name="comment"
-                value={comentario}
-                onChange={(e) => setComentario(e.target.value)}
-              />
-
-              <span className="ayuda">Máximo 500 caracteres.</span>
-
-              <span className="error-campo">{errores.comentario}</span>
-            </div>
-
-            <button className="boton" type="submit">
-              Enviar mensaje
-            </button>
-
-            {mensajeExito && <p className="mensaje-exito">{mensajeExito}</p>}
-          </form>
-
-          <aside className="panel">
-            <h2>Atención Luz de Plata</h2>
-
-            <p>
-              Respondemos consultas sobre productos, disponibilidad y envíos.
-            </p>
-
-            <p>
-              <strong>Horario:</strong>
-              <br />
-              Lunes a viernes, 10:00 a 18:00.
-            </p>
-
-            <p>
-              <strong>Correo:</strong>
-              <br />
-              contacto@luzdeplata.cl
-            </p>
-          </aside>
+          </div>
         </div>
       </section>
     </main>
