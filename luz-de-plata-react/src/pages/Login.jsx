@@ -95,8 +95,6 @@ function Login() {
     }
 
     navigate("/");
-
-    navigate("/");
   }
 
   return (
