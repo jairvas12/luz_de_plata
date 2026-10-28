@@ -1,52 +1,27 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import regiones from "../../data/regiones";
 import { obtenerUsuarios, guardarUsuarios } from "../../utils/usuarios";
 import "../../css/estilos.css";
 
 function UsuarioEditar() {
+
   const { id } = useParams();
   const navigate = useNavigate();
-
-  const [run, setRun] = useState("");
-  const [nombre, setNombre] = useState("");
-  const [apellidos, setApellidos] = useState("");
-  const [email, setEmail] = useState("");
-  const [fechaNacimiento, setFechaNacimiento] = useState("");
-  const [rol, setRol] = useState("Cliente");
-  const [region, setRegion] = useState("");
-  const [comuna, setComuna] = useState("");
-  const [direccion, setDireccion] = useState("");
-  const [activo, setActivo] = useState(true);
-
+  const usuarios = obtenerUsuarios();
+  const usuario = usuarios.find((item) => item.id === id);
+  const [run, setRun] = useState(usuario?.run || "");
+  const [nombre, setNombre] = useState(usuario?.name || "");
+  const [apellidos, setApellidos] = useState(usuario?.lastName || "");
+  const [email, setEmail] = useState(usuario?.email || "");
+  const [fechaNacimiento, setFechaNacimiento] = useState(usuario?.birthDate || "");
+  const [rol, setRol] = useState(usuario?.role || "Cliente");
+  const [region, setRegion] = useState(usuario?.region || "");
+  const [comuna, setComuna] = useState(usuario?.commune || "");
+  const [direccion, setDireccion] = useState(usuario?.address || "");
+  const [activo, setActivo] = useState(usuario?.active !== false);
   const [errores, setErrores] = useState({});
-  const [cargando, setCargando] = useState(true);
-
   const comunasDisponibles = region ? regiones[region] || [] : [];
-
-  useEffect(() => {
-    const usuarios = obtenerUsuarios();
-
-    const usuario = usuarios.find((item) => item.id === id);
-
-    if (!usuario) {
-      navigate("/admin/usuarios");
-      return;
-    }
-
-    setRun(usuario.run || "");
-    setNombre(usuario.name || "");
-    setApellidos(usuario.lastName || "");
-    setEmail(usuario.email || "");
-    setFechaNacimiento(usuario.birthDate || "");
-    setRol(usuario.role || "Cliente");
-    setRegion(usuario.region || "");
-    setComuna(usuario.commune || "");
-    setDireccion(usuario.address || "");
-    setActivo(usuario.active !== false);
-
-    setCargando(false);
-  }, [id, navigate]);
 
   function validarFormulario() {
     const nuevosErrores = {};
@@ -152,14 +127,10 @@ function UsuarioEditar() {
     setRegion(e.target.value);
     setComuna("");
   }
-
-  if (cargando) {
+  
+  if (!usuario) {
     return (
-      <main>
-        <section className="seccion--corta">
-          <div className="contenedor">Cargando usuario...</div>
-        </section>
-      </main>
+      <Navigate to="/admin/usuarios"replace/>
     );
   }
 
