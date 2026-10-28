@@ -1,9 +1,10 @@
 import { useState } from "react";
 import "../css/estilos.css";
-import productos from "../data/productos";
+import {obtenerProductosConStock} from "../utils/stock";
 import ProductoCard from "../components/ProductoCard";
 
 function Catalogo() {
+  const productos = obtenerProductosConStock();
   const [categoria, setCategoria] = useState("");
   const [orden, setOrden] = useState("");
 

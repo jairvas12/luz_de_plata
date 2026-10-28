@@ -1,12 +1,12 @@
 import { useParams, Link } from "react-router-dom";
-import productos from "../data/productos";
+import { obtenerProductosConStock } from "../utils/stock";
 import { agregarAlCarrito } from "../utils/carrito";
 import "../css/estilos.css";
 
 function DetalleProducto() {
   const { id } = useParams();
-
-  const producto = productos.find((producto) => producto.id === id);
+  const productos = obtenerProductosConStock();
+  const producto = productos.find( (producto) => producto.id === id);
 
   if (!producto) {
     return (

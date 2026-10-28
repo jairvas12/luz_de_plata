@@ -465,6 +465,151 @@ main {
   color: white;
   font-size: 2.8rem;
 }
+
+.compra-exitosa__resumen {
+  margin: 25px 0;
+  padding: 20px;
+  background: #f8f8f8;
+  border-radius: var(--radio);
+}
+
+.compra-exitosa__acciones {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.compras-lista {
+  display: grid;
+  gap: 24px;
+}
+
+.compra-card {
+  background: white;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  padding: 25px;
+  box-shadow: var(--sombra);
+}
+
+.compra-card__cabecera {
+  display: flex;
+  justify-content: space-between;
+  gap: 25px;
+  margin-bottom: 20px;
+}
+
+.compra-card__cabecera h2 {
+  margin: 8px 0;
+  font-size: 1.2rem;
+}
+
+.compra-card__estado {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: #f2fbf6;
+  color: #205b42;
+  font-size: 0.85rem;
+}
+
+.compra-card__total {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+}
+
+.compra-card__total strong {
+  font-size: 1.5rem;
+}
+
+.boleta {
+  margin-top: 25px;
+  padding: 30px;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  background: #fafafa;
+}
+
+.boleta__encabezado {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--borde);
+}
+
+.boleta__encabezado h3 {
+  margin: 0;
+}
+
+.boleta__datos {
+  padding: 20px 0;
+}
+
+.boleta__tabla-contenedor {
+  overflow-x: auto;
+}
+
+.boleta__tabla {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.boleta__tabla th,
+.boleta__tabla td {
+  padding: 12px;
+  border-bottom: 1px solid var(--borde);
+  text-align: left;
+}
+
+.boleta__tabla th {
+  background: #f1f1f1;
+}
+
+.boleta__total {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 25px;
+  margin-top: 25px;
+  font-size: 1.15rem;
+}
+
+.boleta__total strong {
+  font-size: 1.5rem;
+}
+
+.boleta__nota {
+  margin-top: 25px;
+  color: var(--suave);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+@media (max-width: 580px) {
+  .compra-card__cabecera {
+    flex-direction: column;
+  }
+
+  .compra-card__total {
+    text-align: left;
+  }
+
+  .boleta {
+    padding: 18px;
+  }
+
+  .boleta__encabezado {
+    flex-direction: column;
+  }
+
+  .boleta__total {
+    justify-content: space-between;
+  }
+}
+
 @media (max-width: 900px) {
   .productos-grid {
     grid-template-columns: repeat(2, 1fr);

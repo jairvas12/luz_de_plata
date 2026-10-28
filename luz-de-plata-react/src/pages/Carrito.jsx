@@ -6,6 +6,7 @@ import {
   vaciarCarrito,
 } from "../utils/carrito";
 import { guardarCompra } from "../utils/compras";
+import { descontarStock } from "../utils/stock";
 import "../css/estilos.css";
 
 function Carrito() {
@@ -50,17 +51,28 @@ function Carrito() {
   );
 
   function finalizarCompra() {
-    if (carrito.length === 0) {
+    if (
+      carrito.length === 0
+    ) {
       return;
     }
-
-    guardarCompra(carrito, subtotal);
-
+    const stockDescontado =
+      descontarStock(
+        carrito
+      );
+    if (!stockDescontado) {
+      alert("No hay stock suficiente para completar la compra.");
+      return;
+    }
+    guardarCompra(
+      carrito,
+      subtotal
+    );
     vaciarCarrito();
-
     setCarrito([]);
-
-    navigate("/Compra_Exitosa");
+    navigate(
+      "/Compra_Exitosa"
+    );
   }
 
   return (
