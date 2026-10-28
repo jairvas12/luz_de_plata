@@ -1,7 +1,8 @@
 import {Link} from "react-router-dom";
-import productos from "../../data/productos";
+import {obtenerProductosConStock} from "../../utils/stock";
 
 function ProductosAdmin() {
+  const productos = obtenerProductosConStock();
   function formatearPrecio(precio) {
     return new Intl.NumberFormat(
       "es-CL",
