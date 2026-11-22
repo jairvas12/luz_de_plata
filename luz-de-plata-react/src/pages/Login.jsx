@@ -1,22 +1,18 @@
 import "../css/estilos.css";
 
 import { useState } from "react";
-
 import { Link, useNavigate } from "react-router-dom";
 
-import { iniciarSesion } from "../services/usuariosService.js";
+import { apiRequest } from "../services/api.js";
 
 function Login() {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
-
   const [password, setPassword] = useState("");
 
   const [errorEmail, setErrorEmail] = useState("");
-
   const [errorPassword, setErrorPassword] = useState("");
-
   const [errorLogin, setErrorLogin] = useState("");
 
   function validarEmail() {
@@ -24,18 +20,16 @@ function Login() {
 
     if (!correo) {
       setErrorEmail("El correo es requerido.");
-
       return false;
     }
 
     if (correo.length > 100) {
       setErrorEmail("Máximo 100 caracteres.");
-
       return false;
     }
 
     const correoValido =
-      /^[^\s@]+@(duoc\.cl|profesor\.duoc\.cl|gmail\.com|yahoo\.com)$/i;
+      /^[^\s@]+@(duoc\.cl|profesor\.duoc\.cl|gmail\.com|yahoo\.com|luzdeplata\.cl)$/i;
 
     if (!correoValido.test(correo)) {
       setErrorEmail(
@@ -46,55 +40,92 @@ function Login() {
     }
 
     setErrorEmail("");
-
     return true;
   }
 
   function validarPassword() {
     if (!password) {
       setErrorPassword("La contraseña es requerida.");
-
       return false;
     }
 
     if (password.length < 4 || password.length > 10) {
-      setErrorPassword("Debe tener entre 4 y 10 caracteres.");
+      setErrorPassword(
+        "Debe tener entre 4 y 10 caracteres.",
+      );
 
       return false;
     }
 
     setErrorPassword("");
-
     return true;
   }
 
-  function manejarSubmit(evento) {
+  async function manejarSubmit(evento) {
     evento.preventDefault();
 
     setErrorLogin("");
 
     const emailCorrecto = validarEmail();
-
     const passwordCorrecta = validarPassword();
 
     if (!emailCorrecto || !passwordCorrecta) {
       return;
     }
 
-    const sesion = iniciarSesion(email, password);
+    try {
+      const respuesta = await apiRequest(
+        "/auth/login",
+        {
+          method: "POST",
 
-    if (!sesion) {
-      setErrorLogin("Correo o contraseña incorrectos.");
+          body: JSON.stringify({
+            email: email.trim(),
+            password: password,
+          }),
+        },
+      );
 
-      return;
+      localStorage.setItem(
+        "token",
+        respuesta.token,
+      );
+
+      const roles = {
+        ADMINISTRADOR: "Administrador",
+        VENDEDOR: "Vendedor",
+        CLIENTE: "Cliente",
+      };
+
+      const sesion = {
+        id: respuesta.id,
+        name: respuesta.nombre,
+        email: respuesta.email,
+        role:
+          roles[respuesta.rol]
+          || respuesta.rol,
+      };
+
+      localStorage.setItem(
+        "lp_session_v1",
+        JSON.stringify(sesion),
+      );
+
+      if (
+        respuesta.rol === "ADMINISTRADOR"
+        || respuesta.rol === "VENDEDOR"
+      ) {
+        navigate("/admin");
+        return;
+      }
+
+      navigate("/");
+    } catch (error) {
+      setErrorLogin(
+        error.message
+        || "Correo o contraseña incorrectos.",
+      );
     }
-
-    if (sesion.role === "Administrador" || sesion.role === "Vendedor") {
-      navigate("/admin");
-      return;
-    }
-
-    navigate("/");
   }
 
   return (
@@ -103,11 +134,16 @@ function Login() {
         <h1>Mi cuenta</h1>
 
         <div className="tabs-auth">
-          <Link className="activo" to="/login">
+          <Link
+            className="activo"
+            to="/login"
+          >
             Inicio de sesión
           </Link>
 
-          <Link to="/Registro">Crear cuenta</Link>
+          <Link to="/Registro">
+            Crear cuenta
+          </Link>
         </div>
 
         <form
@@ -117,7 +153,9 @@ function Login() {
           noValidate
         >
           <div className="campo">
-            <label htmlFor="email">Correo electrónico</label>
+            <label htmlFor="email">
+              Correo electrónico
+            </label>
 
             <input
               autoComplete="email"
@@ -127,16 +165,28 @@ function Login() {
               placeholder="nombre@gmail.com"
               type="email"
               value={email}
-              onChange={(evento) => setEmail(evento.target.value)}
+              onChange={(evento) =>
+                setEmail(evento.target.value)
+              }
               onBlur={validarEmail}
-              className={errorEmail ? "invalido" : email ? "valido" : ""}
+              className={
+                errorEmail
+                  ? "invalido"
+                  : email
+                    ? "valido"
+                    : ""
+              }
             />
 
-            <span className="error-campo">{errorEmail}</span>
+            <span className="error-campo">
+              {errorEmail}
+            </span>
           </div>
 
           <div className="campo">
-            <label htmlFor="password">Contraseña</label>
+            <label htmlFor="password">
+              Contraseña
+            </label>
 
             <input
               autoComplete="current-password"
@@ -146,30 +196,50 @@ function Login() {
               name="password"
               type="password"
               value={password}
-              onChange={(evento) => setPassword(evento.target.value)}
+              onChange={(evento) =>
+                setPassword(
+                  evento.target.value,
+                )
+              }
               onBlur={validarPassword}
-              className={errorPassword ? "invalido" : password ? "valido" : ""}
+              className={
+                errorPassword
+                  ? "invalido"
+                  : password
+                    ? "valido"
+                    : ""
+              }
             />
 
-            <span className="error-campo">{errorPassword}</span>
+            <span className="error-campo">
+              {errorPassword}
+            </span>
           </div>
 
           <label>
-            <input name="remember" type="checkbox" />
+            <input
+              name="remember"
+              type="checkbox"
+            />
             Recordarme
           </label>
 
           {errorLogin && (
-            <div className="alerta alerta--error">{errorLogin}</div>
+            <div className="alerta alerta--error">
+              {errorLogin}
+            </div>
           )}
 
-          <button className="boton boton--bloque" type="submit">
+          <button
+            className="boton boton--bloque"
+            type="submit"
+          >
             Iniciar sesión
           </button>
 
           <p className="ayuda">
-            Demo: admin@duoc.cl / admin123 · vendedor@duoc.cl / venta123 ·
-            cliente@gmail.com / clave123
+            Demo: admin@luzdeplata.cl /
+            Admin123!
           </p>
         </form>
       </section>

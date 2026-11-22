@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+
 import regiones from "../data/regiones";
-import { registrarUsuario } from "../utils/usuarios";
+import { apiRequest } from "../services/api.js";
+
 import "../css/estilos.css";
 
 function Registro() {
@@ -19,67 +21,94 @@ function Registro() {
   const [errores, setErrores] = useState({});
   const [mensajeExito, setMensajeExito] = useState("");
 
-  const comunasDisponibles = region ? regiones[region] || [] : [];
+  const comunasDisponibles =
+    region
+      ? regiones[region] || []
+      : [];
 
   function validarFormulario() {
     const nuevosErrores = {};
 
     if (!nombre.trim()) {
-      nuevosErrores.nombre = "El nombre es requerido.";
+      nuevosErrores.nombre =
+        "El nombre es requerido.";
     }
 
     if (!apellidos.trim()) {
-      nuevosErrores.apellidos = "Los apellidos son requeridos.";
+      nuevosErrores.apellidos =
+        "Los apellidos son requeridos.";
     }
 
     if (!email.trim()) {
-      nuevosErrores.email = "El correo es requerido.";
+      nuevosErrores.email =
+        "El correo es requerido.";
     } else {
-      const correoValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+      const correoValido =
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+          email.trim(),
+        );
 
       if (!correoValido) {
-        nuevosErrores.email = "Ingresa un correo válido.";
+        nuevosErrores.email =
+          "Ingresa un correo válido.";
       }
     }
 
     if (!fechaNacimiento) {
-      nuevosErrores.fechaNacimiento = "La fecha de nacimiento es requerida.";
+      nuevosErrores.fechaNacimiento =
+        "La fecha de nacimiento es requerida.";
     }
 
     if (!region) {
-      nuevosErrores.region = "Selecciona una región.";
+      nuevosErrores.region =
+        "Selecciona una región.";
     }
 
     if (!comuna) {
-      nuevosErrores.comuna = "Selecciona una comuna.";
+      nuevosErrores.comuna =
+        "Selecciona una comuna.";
     }
 
     if (!direccion.trim()) {
-      nuevosErrores.direccion = "La dirección es requerida.";
+      nuevosErrores.direccion =
+        "La dirección es requerida.";
     }
 
     if (!password) {
-      nuevosErrores.password = "La contraseña es requerida.";
-    } else if (password.length < 4 || password.length > 10) {
-      nuevosErrores.password = "Debe tener entre 4 y 10 caracteres.";
+      nuevosErrores.password =
+        "La contraseña es requerida.";
+    } else if (
+      password.length < 4
+      || password.length > 10
+    ) {
+      nuevosErrores.password =
+        "Debe tener entre 4 y 10 caracteres.";
     }
 
     if (!confirmPassword) {
-      nuevosErrores.confirmPassword = "Debes confirmar la contraseña.";
-    } else if (password !== confirmPassword) {
-      nuevosErrores.confirmPassword = "Las contraseñas no coinciden.";
+      nuevosErrores.confirmPassword =
+        "Debes confirmar la contraseña.";
+    } else if (
+      password !== confirmPassword
+    ) {
+      nuevosErrores.confirmPassword =
+        "Las contraseñas no coinciden.";
     }
 
     if (!aceptaTerminos) {
-      nuevosErrores.terminos = "Debes aceptar los términos.";
+      nuevosErrores.terminos =
+        "Debes aceptar los términos.";
     }
 
     setErrores(nuevosErrores);
 
-    return Object.keys(nuevosErrores).length === 0;
+    return (
+      Object.keys(nuevosErrores).length
+      === 0
+    );
   }
 
-  function enviarRegistro(e) {
+  async function enviarRegistro(e) {
     e.preventDefault();
 
     setMensajeExito("");
@@ -88,48 +117,55 @@ function Registro() {
       return;
     }
 
-    const nuevoUsuario = {
-      id: `USR-${Date.now()}`,
-      name: nombre.trim(),
-      lastName: apellidos.trim(),
-      email: email.trim(),
-      birthDate: fechaNacimiento,
-      region,
-      commune: comuna,
-      address: direccion.trim(),
-      password,
-      role: "Cliente",
-      active: true,
-    };
+    try {
+      await apiRequest(
+        "/auth/register",
+        {
+          method: "POST",
 
-    const resultado = registrarUsuario(nuevoUsuario);
+          body: JSON.stringify({
+            nombre: nombre.trim(),
+            apellidos: apellidos.trim(),
+            email: email.trim(),
+            fechaNacimiento:
+              fechaNacimiento,
+            password: password,
+            region: region,
+            comuna: comuna,
+            direccion:
+              direccion.trim(),
+          }),
+        },
+      );
 
-    if (!resultado.ok) {
+      setNombre("");
+      setApellidos("");
+      setEmail("");
+      setFechaNacimiento("");
+      setRegion("");
+      setComuna("");
+      setDireccion("");
+      setPassword("");
+      setConfirmPassword("");
+      setAceptaTerminos(false);
+
+      setErrores({});
+
+      setMensajeExito(
+        "Cuenta creada correctamente.",
+      );
+    } catch (error) {
       setErrores({
-        email: resultado.mensaje,
+        email:
+          error.message
+          || "No fue posible crear la cuenta.",
       });
-
-      return;
     }
-
-    setNombre("");
-    setApellidos("");
-    setEmail("");
-    setFechaNacimiento("");
-    setRegion("");
-    setComuna("");
-    setDireccion("");
-    setPassword("");
-    setConfirmPassword("");
-    setAceptaTerminos(false);
-
-    setErrores({});
-
-    setMensajeExito("Cuenta creada correctamente.");
   }
 
   function cambiarRegion(e) {
-    const nuevaRegion = e.target.value;
+    const nuevaRegion =
+      e.target.value;
 
     setRegion(nuevaRegion);
     setComuna("");
@@ -142,7 +178,8 @@ function Registro() {
           <h1>Crear cuenta</h1>
 
           <p className="bajada">
-            Regístrate para guardar tus datos y revisar tus compras.
+            Regístrate para guardar tus
+            datos y revisar tus compras.
           </p>
         </div>
       </section>
@@ -157,7 +194,10 @@ function Registro() {
             <h2>Registro</h2>
 
             <div className="campo mb-3">
-              <label htmlFor="registro-nombre" className="form-label">
+              <label
+                htmlFor="registro-nombre"
+                className="form-label"
+              >
                 Nombre *
               </label>
 
@@ -166,14 +206,23 @@ function Registro() {
                 id="registro-nombre"
                 maxLength="100"
                 value={nombre}
-                onChange={(e) => setNombre(e.target.value)}
+                onChange={(e) =>
+                  setNombre(
+                    e.target.value,
+                  )
+                }
               />
 
-              <span className="error-campo">{errores.nombre}</span>
+              <span className="error-campo">
+                {errores.nombre}
+              </span>
             </div>
 
             <div className="campo mb-3">
-              <label htmlFor="registro-apellidos" className="form-label">
+              <label
+                htmlFor="registro-apellidos"
+                className="form-label"
+              >
                 Apellidos *
               </label>
 
@@ -182,14 +231,23 @@ function Registro() {
                 id="registro-apellidos"
                 maxLength="100"
                 value={apellidos}
-                onChange={(e) => setApellidos(e.target.value)}
+                onChange={(e) =>
+                  setApellidos(
+                    e.target.value,
+                  )
+                }
               />
 
-              <span className="error-campo">{errores.apellidos}</span>
+              <span className="error-campo">
+                {errores.apellidos}
+              </span>
             </div>
 
             <div className="campo mb-3">
-              <label htmlFor="registro-email" className="form-label">
+              <label
+                htmlFor="registro-email"
+                className="form-label"
+              >
                 Correo *
               </label>
 
@@ -199,14 +257,23 @@ function Registro() {
                 type="email"
                 maxLength="100"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) =>
+                  setEmail(
+                    e.target.value,
+                  )
+                }
               />
 
-              <span className="error-campo">{errores.email}</span>
+              <span className="error-campo">
+                {errores.email}
+              </span>
             </div>
 
             <div className="campo mb-3">
-              <label htmlFor="registro-fecha" className="form-label">
+              <label
+                htmlFor="registro-fecha"
+                className="form-label"
+              >
                 Fecha de nacimiento *
               </label>
 
@@ -215,14 +282,23 @@ function Registro() {
                 id="registro-fecha"
                 type="date"
                 value={fechaNacimiento}
-                onChange={(e) => setFechaNacimiento(e.target.value)}
+                onChange={(e) =>
+                  setFechaNacimiento(
+                    e.target.value,
+                  )
+                }
               />
 
-              <span className="error-campo">{errores.fechaNacimiento}</span>
+              <span className="error-campo">
+                {errores.fechaNacimiento}
+              </span>
             </div>
 
             <div className="campo mb-3">
-              <label htmlFor="registro-region" className="form-label">
+              <label
+                htmlFor="registro-region"
+                className="form-label"
+              >
                 Región *
               </label>
 
@@ -232,20 +308,32 @@ function Registro() {
                 value={region}
                 onChange={cambiarRegion}
               >
-                <option value="">Selecciona una región</option>
+                <option value="">
+                  Selecciona una región
+                </option>
 
-                {Object.keys(regiones).map((nombreRegion) => (
-                  <option key={nombreRegion} value={nombreRegion}>
-                    {nombreRegion}
-                  </option>
-                ))}
+                {Object.keys(regiones).map(
+                  (nombreRegion) => (
+                    <option
+                      key={nombreRegion}
+                      value={nombreRegion}
+                    >
+                      {nombreRegion}
+                    </option>
+                  ),
+                )}
               </select>
 
-              <span className="error-campo">{errores.region}</span>
+              <span className="error-campo">
+                {errores.region}
+              </span>
             </div>
 
             <div className="campo mb-3">
-              <label htmlFor="registro-comuna" className="form-label">
+              <label
+                htmlFor="registro-comuna"
+                className="form-label"
+              >
                 Comuna *
               </label>
 
@@ -253,23 +341,39 @@ function Registro() {
                 className="form-select"
                 id="registro-comuna"
                 value={comuna}
-                onChange={(e) => setComuna(e.target.value)}
+                onChange={(e) =>
+                  setComuna(
+                    e.target.value,
+                  )
+                }
                 disabled={!region}
               >
-                <option value="">Selecciona una comuna</option>
+                <option value="">
+                  Selecciona una comuna
+                </option>
 
-                {comunasDisponibles.map((nombreComuna) => (
-                  <option key={nombreComuna} value={nombreComuna}>
-                    {nombreComuna}
-                  </option>
-                ))}
+                {comunasDisponibles.map(
+                  (nombreComuna) => (
+                    <option
+                      key={nombreComuna}
+                      value={nombreComuna}
+                    >
+                      {nombreComuna}
+                    </option>
+                  ),
+                )}
               </select>
 
-              <span className="error-campo">{errores.comuna}</span>
+              <span className="error-campo">
+                {errores.comuna}
+              </span>
             </div>
 
             <div className="campo mb-3">
-              <label htmlFor="registro-direccion" className="form-label">
+              <label
+                htmlFor="registro-direccion"
+                className="form-label"
+              >
                 Dirección *
               </label>
 
@@ -278,14 +382,23 @@ function Registro() {
                 id="registro-direccion"
                 maxLength="150"
                 value={direccion}
-                onChange={(e) => setDireccion(e.target.value)}
+                onChange={(e) =>
+                  setDireccion(
+                    e.target.value,
+                  )
+                }
               />
 
-              <span className="error-campo">{errores.direccion}</span>
+              <span className="error-campo">
+                {errores.direccion}
+              </span>
             </div>
 
             <div className="campo mb-3">
-              <label htmlFor="registro-password" className="form-label">
+              <label
+                htmlFor="registro-password"
+                className="form-label"
+              >
                 Contraseña *
               </label>
 
@@ -294,16 +407,27 @@ function Registro() {
                 id="registro-password"
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) =>
+                  setPassword(
+                    e.target.value,
+                  )
+                }
               />
 
-              <span className="ayuda">Entre 4 y 10 caracteres.</span>
+              <span className="ayuda">
+                Entre 4 y 10 caracteres.
+              </span>
 
-              <span className="error-campo">{errores.password}</span>
+              <span className="error-campo">
+                {errores.password}
+              </span>
             </div>
 
             <div className="campo mb-3">
-              <label htmlFor="registro-confirmar" className="form-label">
+              <label
+                htmlFor="registro-confirmar"
+                className="form-label"
+              >
                 Confirmar contraseña *
               </label>
 
@@ -312,10 +436,18 @@ function Registro() {
                 id="registro-confirmar"
                 type="password"
                 value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                onChange={(e) =>
+                  setConfirmPassword(
+                    e.target.value,
+                  )
+                }
               />
 
-              <span className="error-campo">{errores.confirmPassword}</span>
+              <span className="error-campo">
+                {
+                  errores.confirmPassword
+                }
+              </span>
             </div>
 
             <div className="campo mb-3">
@@ -325,27 +457,45 @@ function Registro() {
                   id="registro-terminos"
                   type="checkbox"
                   checked={aceptaTerminos}
-                  onChange={(e) => setAceptaTerminos(e.target.checked)}
+                  onChange={(e) =>
+                    setAceptaTerminos(
+                      e.target.checked,
+                    )
+                  }
                 />
 
-                <label className="form-check-label" htmlFor="registro-terminos">
-                  Acepto los términos y condiciones
+                <label
+                  className="form-check-label"
+                  htmlFor="registro-terminos"
+                >
+                  Acepto los términos y
+                  condiciones
                 </label>
               </div>
 
-              <span className="error-campo">{errores.terminos}</span>
+              <span className="error-campo">
+                {errores.terminos}
+              </span>
             </div>
 
-            <button className="boton btn btn-dark w-100" type="submit">
+            <button
+              className="boton btn btn-dark w-100"
+              type="submit"
+            >
               Crear cuenta
             </button>
 
             {mensajeExito && (
-              <p className="mensaje-exito mt-3">{mensajeExito}</p>
+              <p className="mensaje-exito mt-3">
+                {mensajeExito}
+              </p>
             )}
 
             <p className="mt-3 mb-0">
-              ¿Ya tienes cuenta? <Link to="/Login">Iniciar sesión</Link>
+              ¿Ya tienes cuenta?{" "}
+              <Link to="/Login">
+                Iniciar sesión
+              </Link>
             </p>
           </form>
         </div>
