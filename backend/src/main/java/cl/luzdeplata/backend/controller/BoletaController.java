@@ -2,6 +2,7 @@ package cl.luzdeplata.backend.controller;
 
 import java.util.List;
 
+import cl.luzdeplata.backend.dto.BoletaResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.security.core.Authentication;
 import cl.luzdeplata.backend.dto.CompraRequest;
 import cl.luzdeplata.backend.entity.Boleta;
 import cl.luzdeplata.backend.service.BoletaService;
@@ -28,48 +29,77 @@ public class BoletaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Boleta>> listarTodas() {
+    public ResponseEntity<List<BoletaResponse>> listarTodas() {
+
+        List<BoletaResponse> boletas =
+            boletaService
+                .listarTodas()
+                .stream()
+                .map(
+                    BoletaResponse::desdeBoleta
+                )
+                .toList();
 
         return ResponseEntity.ok(
-            boletaService.listarTodas()
+            boletas
         );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Boleta> buscarPorId(
+    public ResponseEntity<BoletaResponse> buscarPorId(
         @PathVariable Long id
     ) {
 
-        return ResponseEntity.ok(
-            boletaService.buscarPorId(id)
-        );
-    }
-
-    @GetMapping("/usuario/{usuarioId}")
-    public ResponseEntity<List<Boleta>> listarPorUsuario(
-        @PathVariable Long usuarioId
-    ) {
+        Boleta boleta =
+            boletaService.buscarPorId(id);
 
         return ResponseEntity.ok(
-            boletaService.listarPorUsuario(
-                usuarioId
+            BoletaResponse.desdeBoleta(
+                boleta
             )
         );
     }
 
-    @PostMapping
-    public ResponseEntity<Boleta> crearCompra(
-        @RequestBody CompraRequest request
+    @GetMapping("/usuario/{usuarioId}")
+    public ResponseEntity<List<BoletaResponse>> listarPorUsuario(
+        @PathVariable Long usuarioId
     ) {
 
-        Boleta boleta =
-            boletaService.crearCompra(
-                request.getUsuarioId(),
-                request.getItems()
-            );
+        List<BoletaResponse> boletas =
+            boletaService
+                .listarPorUsuario(usuarioId)
+                .stream()
+                .map(
+                    BoletaResponse::desdeBoleta
+                )
+                .toList();
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(boleta);
+        return ResponseEntity.ok(
+            boletas
+        );
     }
+
+        @PostMapping
+        public ResponseEntity<BoletaResponse> crearCompra(
+            @RequestBody CompraRequest request,
+            Authentication authentication
+        ) {
+
+            String email =
+                authentication.getName();
+
+            Boleta boleta =
+                boletaService.crearCompra(
+                    email,
+                    request.getItems()
+                );
+
+            return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(
+                    BoletaResponse.desdeBoleta(
+                        boleta
+                    )
+                );
+        }
 }

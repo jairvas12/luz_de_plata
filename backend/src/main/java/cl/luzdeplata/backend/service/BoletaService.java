@@ -45,29 +45,32 @@ public class BoletaService {
     }
 
     public List<Boleta> listarTodas() {
-        return boletaRepository.findAll();
+        return boletaRepository.findAllConUsuario();
     }
 
     public Boleta buscarPorId(Long id) {
+
         return boletaRepository
-                .findById(id)
-                .orElseThrow(
-                    () -> new RecursoNoEncontradoException(
-                        "Boleta no encontrada"
-                    )
-                );
+            .findByIdConUsuario(id)
+            .orElseThrow(
+                () -> new RecursoNoEncontradoException(
+                    "Boleta no encontrada"
+                )
+            );
     }
 
     public List<Boleta> listarPorUsuario(
         Long usuarioId
     ) {
         return boletaRepository
-                .findByUsuario_Id(usuarioId);
+            .findByUsuarioIdConUsuario(
+                usuarioId
+            );
     }
 
     @Transactional
     public Boleta crearCompra(
-        Long usuarioId,
+        String email,
         List<ItemCompraRequest> items
     ) {
 
@@ -79,7 +82,7 @@ public class BoletaService {
 
         Usuario usuario =
             usuarioRepository
-                .findById(usuarioId)
+                .findByEmail(email)
                 .orElseThrow(
                     () -> new RecursoNoEncontradoException(
                         "Usuario no encontrado"

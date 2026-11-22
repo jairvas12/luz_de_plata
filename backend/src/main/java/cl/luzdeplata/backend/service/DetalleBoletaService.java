@@ -20,30 +20,40 @@ public class DetalleBoletaService {
     }
 
     public List<DetalleBoleta> listarTodos() {
-        return detalleBoletaRepository.findAll();
+        return detalleBoletaRepository
+            .findAllConRelaciones();
     }
 
-    public DetalleBoleta buscarPorId(Long id) {
+    public DetalleBoleta buscarPorId(
+        Long id
+    ) {
+
         return detalleBoletaRepository
-                .findById(id)
-                .orElseThrow(
-                    () -> new RecursoNoEncontradoException(
-                        "Detalle de boleta no encontrado"
-                    )
-                );
+            .findByIdConRelaciones(id)
+            .orElseThrow(
+                () -> new RecursoNoEncontradoException(
+                    "Detalle de boleta no encontrado"
+                )
+            );
     }
 
     public List<DetalleBoleta> listarPorBoleta(
         Long boletaId
     ) {
+
         return detalleBoletaRepository
-                .findByBoleta_Id(boletaId);
+            .findByBoletaIdConRelaciones(
+                boletaId
+            );
     }
 
     public List<DetalleBoleta> listarPorProducto(
         Long productoId
     ) {
+
         return detalleBoletaRepository
-                .findByProducto_Id(productoId);
+            .findByProductoIdConRelaciones(
+                productoId
+            );
     }
 }

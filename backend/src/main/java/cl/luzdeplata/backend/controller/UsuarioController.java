@@ -1,7 +1,7 @@
 package cl.luzdeplata.backend.controller;
 
 import java.util.List;
-
+import cl.luzdeplata.backend.dto.UsuarioResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,88 +29,68 @@ public class UsuarioController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Usuario>> listarTodos() {
+    public ResponseEntity<List<UsuarioResponse>> listarTodos() {
+
+        List<UsuarioResponse> usuarios =
+            usuarioService
+                .listarTodos()
+                .stream()
+                .map(
+                    UsuarioResponse::desdeUsuario
+                )
+                .toList();
 
         return ResponseEntity.ok(
-            usuarioService.listarTodos()
+            usuarios
         );
     }
-
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> buscarPorId(
+    public ResponseEntity<UsuarioResponse> buscarPorId(
         @PathVariable Long id
     ) {
 
+        Usuario usuario =
+            usuarioService.buscarPorId(id);
+
         return ResponseEntity.ok(
-            usuarioService.buscarPorId(id)
+            UsuarioResponse.desdeUsuario(
+                usuario
+            )
         );
     }
 
     @PostMapping
-    public ResponseEntity<Usuario> crear(
+    public ResponseEntity<UsuarioResponse> crear(
         @RequestBody Usuario usuario
     ) {
 
-        Usuario usuarioGuardado =
-            usuarioService.guardar(usuario);
+        Usuario usuarioCreado =
+            usuarioService.crear(usuario);
 
         return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(usuarioGuardado);
+            .status(HttpStatus.CREATED)
+            .body(
+                UsuarioResponse.desdeUsuario(
+                    usuarioCreado
+                )
+            );
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Usuario> actualizar(
+    public ResponseEntity<UsuarioResponse> actualizar(
         @PathVariable Long id,
         @RequestBody Usuario usuario
     ) {
 
-        Usuario usuarioExistente =
-            usuarioService.buscarPorId(id);
-
-        usuarioExistente.setRun(
-            usuario.getRun()
-        );
-
-        usuarioExistente.setNombre(
-            usuario.getNombre()
-        );
-
-        usuarioExistente.setApellidos(
-            usuario.getApellidos()
-        );
-
-        usuarioExistente.setEmail(
-            usuario.getEmail()
-        );
-
-        usuarioExistente.setFechaNacimiento(
-            usuario.getFechaNacimiento()
-        );
-
-        usuarioExistente.setRol(
-            usuario.getRol()
-        );
-
-        usuarioExistente.setRegion(
-            usuario.getRegion()
-        );
-
-        usuarioExistente.setComuna(
-            usuario.getComuna()
-        );
-
-        usuarioExistente.setDireccion(
-            usuario.getDireccion()
-        );
-
-        usuarioExistente.setActivo(
-            usuario.getActivo()
-        );
+        Usuario usuarioActualizado =
+            usuarioService.actualizar(
+                id,
+                usuario
+            );
 
         return ResponseEntity.ok(
-            usuarioService.guardar(
-                usuarioExistente
+            UsuarioResponse.desdeUsuario(
+                usuarioActualizado
             )
         );
     }

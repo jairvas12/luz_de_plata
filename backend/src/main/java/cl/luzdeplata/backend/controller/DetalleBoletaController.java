@@ -2,6 +2,8 @@ package cl.luzdeplata.backend.controller;
 
 import java.util.List;
 
+
+import cl.luzdeplata.backend.dto.DetalleBoletaResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,44 +26,72 @@ public class DetalleBoletaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<DetalleBoleta>> listarTodos() {
+    public ResponseEntity<List<DetalleBoletaResponse>> listarTodos() {
+
+        List<DetalleBoletaResponse> detalles =
+            detalleBoletaService
+                .listarTodos()
+                .stream()
+                .map(
+                    DetalleBoletaResponse::desdeDetalle
+                )
+                .toList();
 
         return ResponseEntity.ok(
-            detalleBoletaService.listarTodos()
+            detalles
         );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DetalleBoleta> buscarPorId(
+    public ResponseEntity<DetalleBoletaResponse> buscarPorId(
         @PathVariable Long id
     ) {
 
+        DetalleBoleta detalle =
+            detalleBoletaService.buscarPorId(id);
+
         return ResponseEntity.ok(
-            detalleBoletaService.buscarPorId(id)
+            DetalleBoletaResponse.desdeDetalle(
+                detalle
+            )
         );
     }
 
     @GetMapping("/boleta/{boletaId}")
-    public ResponseEntity<List<DetalleBoleta>> listarPorBoleta(
+    public ResponseEntity<List<DetalleBoletaResponse>> listarPorBoleta(
         @PathVariable Long boletaId
     ) {
 
+        List<DetalleBoletaResponse> detalles =
+            detalleBoletaService
+                .listarPorBoleta(boletaId)
+                .stream()
+                .map(
+                    DetalleBoletaResponse::desdeDetalle
+                )
+                .toList();
+
         return ResponseEntity.ok(
-            detalleBoletaService.listarPorBoleta(
-                boletaId
-            )
+            detalles
         );
     }
 
     @GetMapping("/producto/{productoId}")
-    public ResponseEntity<List<DetalleBoleta>> listarPorProducto(
+    public ResponseEntity<List<DetalleBoletaResponse>> listarPorProducto(
         @PathVariable Long productoId
     ) {
 
+        List<DetalleBoletaResponse> detalles =
+            detalleBoletaService
+                .listarPorProducto(productoId)
+                .stream()
+                .map(
+                    DetalleBoletaResponse::desdeDetalle
+                )
+                .toList();
+
         return ResponseEntity.ok(
-            detalleBoletaService.listarPorProducto(
-                productoId
-            )
+            detalles
         );
     }
 }
