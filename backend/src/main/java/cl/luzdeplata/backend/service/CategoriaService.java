@@ -3,7 +3,7 @@ package cl.luzdeplata.backend.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-
+import cl.luzdeplata.backend.exception.RecursoNoEncontradoException;
 import cl.luzdeplata.backend.entity.Categoria;
 import cl.luzdeplata.backend.repository.CategoriaRepository;
 
@@ -23,8 +23,10 @@ public class CategoriaService {
     }
 
     public Categoria buscarPorId(Long id) {
-        return categoriaRepository.findById(id).orElseThrow(
-                    () -> new RuntimeException(
+        return categoriaRepository
+                .findById(id)
+                .orElseThrow(
+                    () -> new RecursoNoEncontradoException(
                         "Categoría no encontrada"
                     )
                 );
@@ -35,6 +37,12 @@ public class CategoriaService {
     }
 
     public void eliminar(Long id) {
+
+        if (!categoriaRepository.existsById(id)) {
+            throw new RecursoNoEncontradoException(
+                "Categoría no encontrada"
+            );
+        }
         categoriaRepository.deleteById(id);
     }
 }

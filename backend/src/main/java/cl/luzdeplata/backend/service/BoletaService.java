@@ -14,6 +14,8 @@ import cl.luzdeplata.backend.entity.DetalleBoleta;
 import cl.luzdeplata.backend.entity.EstadoBoleta;
 import cl.luzdeplata.backend.entity.Producto;
 import cl.luzdeplata.backend.entity.Usuario;
+import cl.luzdeplata.backend.exception.DatosInvalidosException;
+import cl.luzdeplata.backend.exception.RecursoNoEncontradoException;
 import cl.luzdeplata.backend.repository.BoletaRepository;
 import cl.luzdeplata.backend.repository.DetalleBoletaRepository;
 import cl.luzdeplata.backend.repository.ProductoRepository;
@@ -50,7 +52,7 @@ public class BoletaService {
         return boletaRepository
                 .findById(id)
                 .orElseThrow(
-                    () -> new RuntimeException(
+                    () -> new RecursoNoEncontradoException(
                         "Boleta no encontrada"
                     )
                 );
@@ -70,7 +72,7 @@ public class BoletaService {
     ) {
 
         if (items == null || items.isEmpty()) {
-            throw new RuntimeException(
+            throw new DatosInvalidosException(
                 "La compra debe contener al menos un producto"
             );
         }
@@ -79,7 +81,7 @@ public class BoletaService {
             usuarioRepository
                 .findById(usuarioId)
                 .orElseThrow(
-                    () -> new RuntimeException(
+                    () -> new RecursoNoEncontradoException(
                         "Usuario no encontrado"
                     )
                 );
@@ -112,7 +114,7 @@ public class BoletaService {
                 item.getCantidad() == null
                 || item.getCantidad() <= 0
             ) {
-                throw new RuntimeException(
+                throw new DatosInvalidosException(
                     "La cantidad debe ser mayor que cero"
                 );
             }
@@ -123,7 +125,7 @@ public class BoletaService {
                         item.getProductoId()
                     )
                     .orElseThrow(
-                        () -> new RuntimeException(
+                        () -> new RecursoNoEncontradoException(
                             "Producto no encontrado"
                         )
                     );
@@ -132,7 +134,7 @@ public class BoletaService {
                 producto.getStock()
                 < item.getCantidad()
             ) {
-                throw new RuntimeException(
+                throw new DatosInvalidosException(
                     "Stock insuficiente para el producto: "
                     + producto.getNombre()
                 );

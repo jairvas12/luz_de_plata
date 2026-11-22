@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import cl.luzdeplata.backend.entity.Categoria;
 import cl.luzdeplata.backend.entity.Producto;
+import cl.luzdeplata.backend.exception.RecursoNoEncontradoException;
 import cl.luzdeplata.backend.repository.CategoriaRepository;
 import cl.luzdeplata.backend.repository.ProductoRepository;
 
@@ -29,27 +30,35 @@ public class ProductoService {
     }
 
     public Producto buscarPorId(Long id) {
-        return productoRepository.findById(id)
+        return productoRepository
+                .findById(id)
                 .orElseThrow(
-                    () -> new RuntimeException("Producto no encontrado")
+                    () -> new RecursoNoEncontradoException(
+                        "Producto no encontrado"
+                    )
                 );
     }
 
     public Producto buscarPorCodigo(String codigo) {
-        return productoRepository.findByCodigo(codigo)
+        return productoRepository
+                .findByCodigo(codigo)
                 .orElseThrow(
-                    () -> new RuntimeException("Producto no encontrado")
+                    () -> new RecursoNoEncontradoException(
+                        "Producto no encontrado"
+                    )
                 );
     }
 
     public List<Producto> listarPorCategoria(
         Long categoriaId
     ) {
-        return productoRepository.findByCategoria_Id(categoriaId);
+        return productoRepository
+                .findByCategoria_Id(categoriaId);
     }
 
     public List<Producto> listarDestacados() {
-        return productoRepository.findByDestacadoTrue();
+        return productoRepository
+                .findByDestacadoTrue();
     }
 
     public Producto guardar(
@@ -58,10 +67,14 @@ public class ProductoService {
     ) {
 
         Categoria categoria =
-            categoriaRepository.findById(categoriaId)
+            categoriaRepository
+                .findById(categoriaId)
                 .orElseThrow(
-                    () -> new RuntimeException("Categoría no encontrada")
+                    () -> new RecursoNoEncontradoException(
+                        "Categoría no encontrada"
+                    )
                 );
+
         producto.setCategoria(categoria);
 
         return productoRepository.save(producto);
@@ -70,7 +83,9 @@ public class ProductoService {
     public void eliminar(Long id) {
 
         if (!productoRepository.existsById(id)) {
-            throw new RuntimeException("Producto no encontrado");
+            throw new RecursoNoEncontradoException(
+                "Producto no encontrado"
+            );
         }
 
         productoRepository.deleteById(id);
