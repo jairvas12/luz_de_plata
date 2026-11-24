@@ -1,3 +1,4 @@
+
 package cl.luzdeplata.backend.dto;
 
 import java.util.List;
@@ -10,8 +11,7 @@ public class CompraRequest {
     }
 
     public CompraRequest(
-        List<ItemCompraRequest> items
-    ) {
+            List<ItemCompraRequest> items) {
         this.items = items;
     }
 
@@ -20,8 +20,7 @@ public class CompraRequest {
     }
 
     public void setItems(
-        List<ItemCompraRequest> items
-    ) {
+            List<ItemCompraRequest> items) {
         this.items = items;
     }
 }

@@ -30,13 +30,13 @@ public class SecurityConfig {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
-    // Cifrar las contraseñas mediante BCrypt
+    // Cifrar contraseñas con BCrypt
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // Configurar la seguridad del backend
+    // Configuración principal de seguridad
     @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http) throws Exception {
@@ -46,40 +46,40 @@ public class SecurityConfig {
                 })
                 .csrf(csrf -> csrf.disable())
 
-                // Autenticación mediante JWT, sin sesión de servidor
+                // Autenticación JWT sin sesiones de servidor
                 .sessionManagement(session -> session.sessionCreationPolicy(
                         SessionCreationPolicy.STATELESS))
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // LOGIN Y REGISTRO: acceso público
+                        // LOGIN Y REGISTRO PÚBLICOS
                         .requestMatchers(
                                 HttpMethod.POST,
                                 "/api/v1/auth/login",
                                 "/api/v1/auth/register")
                         .permitAll()
 
-                        // CATÁLOGO: cualquier visitante puede consultar
+                        // CATÁLOGO PÚBLICO
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/api/v1/productos",
                                 "/api/v1/productos/**")
                         .permitAll()
 
-                        // CATEGORÍAS: consulta pública
+                        // CATEGORÍAS PÚBLICAS
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/api/v1/categorias",
                                 "/api/v1/categorias/**")
                         .permitAll()
 
-                        // USUARIOS: solo el administrador
+                        // USUARIOS: SOLO ADMINISTRADOR
                         .requestMatchers(
                                 "/api/v1/usuarios",
                                 "/api/v1/usuarios/**")
                         .hasRole("ADMINISTRADOR")
 
-                        // PRODUCTOS: solo administrador puede modificar
+                        // MODIFICAR PRODUCTOS: SOLO ADMINISTRADOR
                         .requestMatchers(
                                 HttpMethod.POST,
                                 "/api/v1/productos",
@@ -98,7 +98,7 @@ public class SecurityConfig {
                                 "/api/v1/productos/**")
                         .hasRole("ADMINISTRADOR")
 
-                        // CATEGORÍAS: solo administrador modifica
+                        // MODIFICAR CATEGORÍAS: SOLO ADMINISTRADOR
                         .requestMatchers(
                                 HttpMethod.POST,
                                 "/api/v1/categorias",
@@ -117,28 +117,45 @@ public class SecurityConfig {
                                 "/api/v1/categorias/**")
                         .hasRole("ADMINISTRADOR")
 
-                        // ÓRDENES: administrador y vendedor pueden consultar
+                        // MIS COMPRAS: USUARIO AUTENTICADO
+                        // IMPORTANTE: estas reglas deben ir ANTES
+                        // de las reglas generales de boletas.
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/v1/boletas/mis",
+                                "/api/v1/boletas/mis/**")
+                        .authenticated()
+
+                        // TODAS LAS ÓRDENES:
+                        // ADMINISTRADOR Y VENDEDOR
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/api/v1/boletas",
                                 "/api/v1/boletas/**")
-                        .hasAnyRole("ADMINISTRADOR", "VENDEDOR")
+                        .hasAnyRole(
+                                "ADMINISTRADOR",
+                                "VENDEDOR")
 
-                        // COMPRAS: administrador y cliente pueden comprar
+                        // CREAR COMPRAS:
+                        // ADMINISTRADOR Y CLIENTE
                         .requestMatchers(
                                 HttpMethod.POST,
                                 "/api/v1/boletas",
                                 "/api/v1/boletas/**")
-                        .hasAnyRole("ADMINISTRADOR", "CLIENTE")
+                        .hasAnyRole(
+                                "ADMINISTRADOR",
+                                "CLIENTE")
 
-                        // DETALLE DE ÓRDENES: solo lectura
+                        // DETALLES: SOLO CONSULTA
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/api/v1/detalles",
                                 "/api/v1/detalles/**")
-                        .hasAnyRole("ADMINISTRADOR", "VENDEDOR")
+                        .hasAnyRole(
+                                "ADMINISTRADOR",
+                                "VENDEDOR")
 
-                        // Documentación Swagger
+                        // DOCUMENTACIÓN SWAGGER
                         .requestMatchers(
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
@@ -148,15 +165,15 @@ public class SecurityConfig {
                                 "/v3/api-docs/**")
                         .permitAll()
 
-                        // Permitir que Spring devuelva errores HTTP reales
+                        // RESPUESTAS DE ERROR
                         .requestMatchers("/error")
                         .permitAll()
 
-                        // Bloquear cualquier acceso no autorizado
+                        // DENEGAR OTRAS OPERACIONES
                         .anyRequest()
                         .denyAll())
 
-                // Validar el JWT de cada solicitud
+                // Validación del token JWT
                 .addFilterBefore(
                         jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class);
@@ -164,7 +181,7 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // Comunicación entre React y Spring Boot
+    // Permitir conexión desde React
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 

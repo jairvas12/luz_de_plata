@@ -20,6 +20,7 @@ import cl.luzdeplata.backend.repository.BoletaRepository;
 import cl.luzdeplata.backend.repository.DetalleBoletaRepository;
 import cl.luzdeplata.backend.repository.ProductoRepository;
 import cl.luzdeplata.backend.repository.UsuarioRepository;
+import org.springframework.security.access.AccessDeniedException;
 
 @Service
 public class BoletaService {
@@ -68,6 +69,39 @@ public class BoletaService {
             Long boletaId) {
         return detalleBoletaRepository.findByBoleta_Id(
                 boletaId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Boleta> listarMisBoletas(String email) {
+
+        Usuario usuario = usuarioRepository
+                .findByEmail(email)
+                .orElseThrow(
+                        () -> new RecursoNoEncontradoException(
+                                "Usuario no encontrado"));
+
+        return boletaRepository.findByUsuarioIdConUsuario(
+                usuario.getId());
+    }
+
+    @Transactional(readOnly = true)
+    public Boleta buscarMiBoleta(
+            Long boletaId,
+            String email) {
+
+        Boleta boleta = boletaRepository
+                .findByIdConUsuario(boletaId)
+                .orElseThrow(
+                        () -> new RecursoNoEncontradoException(
+                                "Boleta no encontrada"));
+
+        if (!boleta.getUsuario().getEmail()
+                .equalsIgnoreCase(email)) {
+            throw new AccessDeniedException(
+                    "No tienes permiso para consultar esta boleta");
+        }
+
+        return boleta;
     }
 
     @Transactional
