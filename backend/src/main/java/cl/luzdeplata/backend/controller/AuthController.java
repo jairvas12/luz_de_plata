@@ -1,5 +1,6 @@
 package cl.luzdeplata.backend.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,7 +34,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(
-        @RequestBody LoginRequest request
+        @Valid @RequestBody LoginRequest request
     ) {
 
         Usuario usuario =
@@ -57,7 +58,7 @@ public class AuthController {
     }
     @PostMapping("/register")
     public ResponseEntity<UsuarioResponse> register(
-        @RequestBody RegistroRequest request
+        @Valid @RequestBody RegistroRequest request
     ) {
 
         Usuario usuario =

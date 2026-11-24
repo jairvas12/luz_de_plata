@@ -12,6 +12,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity 
 @Table (name = "productos")
@@ -20,39 +25,45 @@ public class Producto {
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column (
-        nullable = false,
-        unique = true,
-        length = 50
+    @NotBlank(message = "El código del producto es obligatorio.")
+    @Size(
+        min = 3,
+        max = 50,
+        message = "El código debe tener entre 3 y 50 caracteres."
     )
     private String codigo;
 
-    @Column (
-        nullable = false,
-        length = 150
+    @NotBlank(message = "El nombre del producto es obligatorio.")
+    @Size(
+        max = 100,
+        message = "El nombre no puede superar los 100 caracteres."
     )
     private String nombre;
 
-    @Column (
-        length = 1000
+    @Size(
+        max = 500,
+        message = "La descripción no puede superar los 500 caracteres."
     )
     private String descripcion;
 
-    @Column (
-        nullable = false,
-        precision = 12,
-        scale = 2
+    @NotNull(message = "El precio es obligatorio.")
+    @DecimalMin(
+        value = "0.0",
+        inclusive = true,
+        message = "El precio no puede ser negativo."
     )
     private BigDecimal precio;
 
-    @Column (
-        nullable = false
+    @NotNull(message = "El stock es obligatorio.")
+    @Min(
+        value = 0,
+        message = "El stock no puede ser negativo."
     )
     private Integer stock;
 
-    @Column (
-        name = "stock_critico",
-        nullable = false
+    @Min(
+        value = 0,
+        message = "El stock crítico no puede ser negativo."
     )
     private Integer stockCritico;
 

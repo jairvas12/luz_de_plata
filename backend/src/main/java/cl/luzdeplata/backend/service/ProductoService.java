@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import cl.luzdeplata.backend.entity.Categoria;
 import cl.luzdeplata.backend.entity.Producto;
+import cl.luzdeplata.backend.exception.RecursoDuplicadoException;
 import cl.luzdeplata.backend.exception.RecursoNoEncontradoException;
 import cl.luzdeplata.backend.repository.CategoriaRepository;
 import cl.luzdeplata.backend.repository.ProductoRepository;
@@ -21,8 +22,11 @@ public class ProductoService {
         ProductoRepository productoRepository,
         CategoriaRepository categoriaRepository
     ) {
-        this.productoRepository = productoRepository;
-        this.categoriaRepository = categoriaRepository;
+        this.productoRepository =
+            productoRepository;
+
+        this.categoriaRepository =
+            categoriaRepository;
     }
 
     public List<Producto> listarTodos() {
@@ -33,19 +37,23 @@ public class ProductoService {
         return productoRepository
                 .findById(id)
                 .orElseThrow(
-                    () -> new RecursoNoEncontradoException(
-                        "Producto no encontrado"
-                    )
+                    () ->
+                        new RecursoNoEncontradoException(
+                            "Producto no encontrado"
+                        )
                 );
     }
 
-    public Producto buscarPorCodigo(String codigo) {
+    public Producto buscarPorCodigo(
+        String codigo
+    ) {
         return productoRepository
                 .findByCodigo(codigo)
                 .orElseThrow(
-                    () -> new RecursoNoEncontradoException(
-                        "Producto no encontrado"
-                    )
+                    () ->
+                        new RecursoNoEncontradoException(
+                            "Producto no encontrado"
+                        )
                 );
     }
 
@@ -53,7 +61,9 @@ public class ProductoService {
         Long categoriaId
     ) {
         return productoRepository
-                .findByCategoria_Id(categoriaId);
+                .findByCategoria_Id(
+                    categoriaId
+                );
     }
 
     public List<Producto> listarDestacados() {
@@ -66,28 +76,76 @@ public class ProductoService {
         Long categoriaId
     ) {
 
+        validarCodigoDuplicado(
+            producto
+        );
+
         Categoria categoria =
             categoriaRepository
                 .findById(categoriaId)
                 .orElseThrow(
-                    () -> new RecursoNoEncontradoException(
-                        "Categoría no encontrada"
-                    )
+                    () ->
+                        new RecursoNoEncontradoException(
+                            "Categoría no encontrada"
+                        )
                 );
 
-        producto.setCategoria(categoria);
+        producto.setCategoria(
+            categoria
+        );
 
-        return productoRepository.save(producto);
+        return productoRepository
+                .save(producto);
     }
 
     public void eliminar(Long id) {
 
-        if (!productoRepository.existsById(id)) {
+        if (
+            !productoRepository
+                .existsById(id)
+        ) {
             throw new RecursoNoEncontradoException(
                 "Producto no encontrado"
             );
         }
 
-        productoRepository.deleteById(id);
+        productoRepository
+            .deleteById(id);
+    }
+
+    private void validarCodigoDuplicado(
+        Producto producto
+    ) {
+
+        productoRepository
+            .findByCodigo(
+                producto.getCodigo()
+            )
+            .ifPresent(
+                productoExistente -> {
+
+                    boolean esNuevo =
+                        producto.getId()
+                            == null;
+
+                    boolean esOtroProducto =
+                        !productoExistente
+                            .getId()
+                            .equals(
+                                producto.getId()
+                            );
+
+                    if (
+                        esNuevo
+                        || esOtroProducto
+                    ) {
+                        throw new RecursoDuplicadoException(
+                            "Ya existe un producto con el código "
+                            + producto.getCodigo()
+                            + "."
+                        );
+                    }
+                }
+            );
     }
 }

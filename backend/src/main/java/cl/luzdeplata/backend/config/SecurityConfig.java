@@ -46,6 +46,35 @@ public class SecurityConfig {
                 })
                 .csrf(csrf -> csrf.disable())
 
+                .exceptionHandling(exception -> exception
+
+                        .authenticationEntryPoint(
+                                (request, response, authException) -> {
+                                response.setStatus(401);
+                                response.setContentType(
+                                        "application/json"
+                                );
+
+                                response.getWriter().write(
+                                        "{\"mensaje\":\"Sesión no válida o expirada.\"}"
+                                );
+                                }
+                        )
+
+                        .accessDeniedHandler(
+                                (request, response, accessDeniedException) -> {
+                                response.setStatus(403);
+                                response.setContentType(
+                                        "application/json"
+                                );
+
+                                response.getWriter().write(
+                                        "{\"mensaje\":\"No tienes permisos para realizar esta acción.\"}"
+                                );
+                                }
+                        )
+                        )
+
                 // Autenticación JWT sin sesiones de servidor
                 .sessionManagement(session -> session.sessionCreationPolicy(
                         SessionCreationPolicy.STATELESS))

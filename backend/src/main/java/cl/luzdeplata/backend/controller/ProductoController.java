@@ -2,7 +2,7 @@
 package cl.luzdeplata.backend.controller;
 
 import java.util.List;
-
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 import cl.luzdeplata.backend.entity.Producto;
 import cl.luzdeplata.backend.service.ProductoService;
+
 
 @RestController
 @RequestMapping("/api/v1/productos")
@@ -73,9 +75,10 @@ public class ProductoController {
     }
 
     // CREAR PRODUCTO
+    @SecurityRequirement(name = "bearerAuth")
     @PostMapping
     public ResponseEntity<Producto> crear(
-            @RequestBody Producto producto,
+            @Valid @RequestBody Producto producto,
             @RequestParam Long categoriaId) {
 
         Producto productoGuardado = productoService.guardar(
@@ -92,10 +95,11 @@ public class ProductoController {
     }
 
     // ACTUALIZAR PRODUCTO
+    @SecurityRequirement(name = "bearerAuth")
     @PutMapping("/{id}")
     public ResponseEntity<Producto> actualizar(
             @PathVariable Long id,
-            @RequestBody Producto producto,
+            @Valid @RequestBody Producto producto,
             @RequestParam Long categoriaId) {
 
         Producto productoExistente = productoService.buscarPorId(id);
@@ -139,6 +143,7 @@ public class ProductoController {
     }
 
     // ELIMINAR PRODUCTO
+    @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(
             @PathVariable Long id) {

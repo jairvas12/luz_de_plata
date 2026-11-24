@@ -95,12 +95,6 @@ public class JwtAuthenticationFilter
         String autoridad =
             "ROLE_" +
             usuario.getRol().name();
-        System.out.println(
-            "JWT USUARIO: "
-            + usuario.getEmail()
-            + " | AUTORIDAD: "
-            + autoridad
-        );
 
         UsernamePasswordAuthenticationToken authentication =
             new UsernamePasswordAuthenticationToken(

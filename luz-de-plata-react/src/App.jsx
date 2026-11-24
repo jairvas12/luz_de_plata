@@ -46,12 +46,19 @@ import AdminLayout from "./layouts/AdminLayout";
 // ==========================================
 // OBTENER SESIÓN ACTUAL
 // ==========================================
-
+function limpiarSesion() {
+  localStorage.removeItem("token");
+  localStorage.removeItem(
+    "lp_session_v1"
+  );
+  localStorage.removeItem("sesion");
+}
 function obtenerSesionActual() {
   const token = localStorage.getItem("token");
   const sesionGuardada = localStorage.getItem("lp_session_v1");
 
   if (!token || !sesionGuardada) {
+    limpiarSesion();
     return null;
   }
 
@@ -59,12 +66,14 @@ function obtenerSesionActual() {
     const sesion = JSON.parse(sesionGuardada);
 
     if (!sesion || !sesion.role) {
+      limpiarSesion();
       return null;
     }
 
     const partes = token.split(".");
 
     if (partes.length !== 3) {
+      limpiarSesion();
       return null;
     }
 
@@ -72,12 +81,17 @@ function obtenerSesionActual() {
 
     const payload = JSON.parse(atob(base64));
 
-    if (typeof payload.exp !== "number" || payload.exp * 1000 <= Date.now()) {
+    if (
+      typeof payload.exp !== "number"
+      || payload.exp * 1000 <= Date.now()
+    ) {
+      limpiarSesion();
       return null;
     }
 
     return sesion;
   } catch {
+    limpiarSesion();
     return null;
   }
 }
