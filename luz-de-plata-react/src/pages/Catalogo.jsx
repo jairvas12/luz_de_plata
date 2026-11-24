@@ -1,12 +1,45 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../css/estilos.css";
-import {obtenerProductosConStock} from "../utils/stock";
+import { obtenerProductos } from "../services/productosService";
 import ProductoCard from "../components/ProductoCard";
 
 function Catalogo() {
-  const productos = obtenerProductosConStock();
+  const [productos, setProductos] = useState([]);
   const [categoria, setCategoria] = useState("");
   const [orden, setOrden] = useState("");
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let activo = true;
+
+    async function cargarProductos() {
+      setCargando(true);
+      setError("");
+
+      try {
+        const datos = await obtenerProductos();
+
+        if (activo) {
+          setProductos(datos);
+        }
+      } catch (err) {
+        if (activo) {
+          setError(err.message);
+        }
+      } finally {
+        if (activo) {
+          setCargando(false);
+        }
+      }
+    }
+
+    cargarProductos();
+
+    return () => {
+      activo = false;
+    };
+  }, []);
 
   let productosFiltrados = [...productos];
 
@@ -17,17 +50,17 @@ function Catalogo() {
     );
   }
 
-  // Ordenar de menor a mayor
+  // Ordenar por precio de menor a mayor
   if (orden === "precio-asc") {
     productosFiltrados.sort((a, b) => a.price - b.price);
   }
 
-  // Ordenar de mayor a menor
+  // Ordenar por precio de mayor a menor
   if (orden === "precio-desc") {
     productosFiltrados.sort((a, b) => b.price - a.price);
   }
 
-  // Ordenar por nombre
+  // Ordenar alfabéticamente
   if (orden === "nombre") {
     productosFiltrados.sort((a, b) => a.name.localeCompare(b.name));
   }
@@ -89,7 +122,11 @@ function Catalogo() {
       <section className="seccion--corta">
         <div className="contenedor">
           <div className="toolbar">
-            <span>{productosFiltrados.length} producto(s)</span>
+            <span>
+              {cargando
+                ? "Cargando productos..."
+                : `${productosFiltrados.length} producto(s)`}
+            </span>
 
             <div className="toolbar__grupo">
               <label>
@@ -113,22 +150,31 @@ function Catalogo() {
                   onChange={(e) => setOrden(e.target.value)}
                 >
                   <option value="">Recomendados</option>
-
                   <option value="precio-asc">Precio menor a mayor</option>
-
                   <option value="precio-desc">Precio mayor a menor</option>
-
                   <option value="nombre">Nombre A-Z</option>
                 </select>
               </label>
             </div>
           </div>
 
-          <div className="productos-grid">
-            {productosFiltrados.map((producto) => (
-              <ProductoCard key={producto.id} producto={producto} />
-            ))}
-          </div>
+          {cargando && <p>Cargando productos desde MySQL...</p>}
+
+          {!cargando && error && (
+            <p role="alert">Error al cargar productos: {error}</p>
+          )}
+
+          {!cargando && !error && productosFiltrados.length === 0 && (
+            <p>No hay productos disponibles para esta categoría.</p>
+          )}
+
+          {!cargando && !error && (
+            <div className="productos-grid">
+              {productosFiltrados.map((producto) => (
+                <ProductoCard key={producto.id} producto={producto} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </main>

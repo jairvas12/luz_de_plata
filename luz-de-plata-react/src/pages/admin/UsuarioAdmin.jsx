@@ -1,24 +1,82 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { obtenerUsuarios, guardarUsuarios } from "../../utils/usuarios";
+
+import {
+  listarUsuariosApi,
+  eliminarUsuarioApi,
+} from "../../services/adminUsuariosApi";
+
 import "../../css/estilos.css";
 
 function UsuariosAdmin() {
-  const [usuarios, setUsuarios] = useState(obtenerUsuarios());
+  const [usuarios, setUsuarios] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState("");
+  const [mensaje, setMensaje] = useState("");
+  const [eliminandoId, setEliminandoId] = useState(null);
 
-  function eliminarUsuario(id) {
+  // Consultar usuarios reales desde Spring Boot
+  const cargarUsuarios = useCallback(async () => {
+    setCargando(true);
+    setError("");
+
+    try {
+      const datos = await listarUsuariosApi();
+      setUsuarios(datos);
+    } catch (err) {
+      setError(err.message || "No se pudieron cargar los usuarios");
+    } finally {
+      setCargando(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    cargarUsuarios();
+  }, [cargarUsuarios]);
+
+  // Eliminar un usuario de MySQL
+  async function eliminarUsuario(usuario) {
     const confirmar = window.confirm(
-      "¿Seguro que deseas eliminar este usuario?",
+      `¿Seguro que deseas eliminar a ${usuario.name} ${usuario.lastName}?\n\nEsta acción eliminará el usuario de la base de datos.`,
     );
 
     if (!confirmar) {
       return;
     }
 
-    const nuevosUsuarios = usuarios.filter((usuario) => usuario.id !== id);
+    setEliminandoId(usuario.id);
+    setError("");
+    setMensaje("");
 
-    setUsuarios(nuevosUsuarios);
-    guardarUsuarios(nuevosUsuarios);
+    try {
+      await eliminarUsuarioApi(usuario.id);
+
+      setUsuarios((actuales) =>
+        actuales.filter((item) => item.id !== usuario.id),
+      );
+
+      setMensaje("Usuario eliminado correctamente.");
+    } catch (err) {
+      setError(err.message || "No se pudo eliminar el usuario");
+    } finally {
+      setEliminandoId(null);
+    }
+  }
+
+  function mostrarRol(rol) {
+    switch (rol) {
+      case "ADMINISTRADOR":
+        return "Administrador";
+
+      case "VENDEDOR":
+        return "Vendedor";
+
+      case "CLIENTE":
+        return "Cliente";
+
+      default:
+        return rol;
+    }
   }
 
   return (
@@ -39,11 +97,31 @@ function UsuariosAdmin() {
 
       <section className="seccion--corta">
         <div className="contenedor">
-          {usuarios.length === 0 ? (
+          {mensaje && <p role="status">{mensaje}</p>}
+
+          {error && (
+            <div role="alert">
+              <p>Error: {error}</p>
+
+              <button
+                type="button"
+                className="boton boton--claro"
+                onClick={cargarUsuarios}
+              >
+                Reintentar
+              </button>
+            </div>
+          )}
+
+          {cargando && <p>Cargando usuarios desde MySQL...</p>}
+
+          {!cargando && !error && usuarios.length === 0 && (
             <div className="mensaje-vacio">No hay usuarios registrados.</div>
-          ) : (
+          )}
+
+          {!cargando && usuarios.length > 0 && (
             <div className="table-responsive">
-              <table className="table table-striped table-hover align-middle">  -- codigo de tabla responsiva 
+              <table className="table table-striped table-hover align-middle">
                 <thead>
                   <tr>
                     <th>ID</th>
@@ -68,13 +146,11 @@ function UsuariosAdmin() {
 
                       <td>{usuario.email}</td>
 
-                      <td>{usuario.role}</td>
+                      <td>{mostrarRol(usuario.role)}</td>
 
                       <td>{usuario.region || "-"}</td>
 
-                      <td>
-                        {usuario.active === false ? "Inactivo" : "Activo"}
-                      </td>
+                      <td>{usuario.active ? "Activo" : "Inactivo"}</td>
 
                       <td>
                         <div className="acciones-tabla">
@@ -88,9 +164,12 @@ function UsuariosAdmin() {
                           <button
                             type="button"
                             className="boton boton--peligro"
-                            onClick={() => eliminarUsuario(usuario.id)}
+                            disabled={eliminandoId !== null}
+                            onClick={() => eliminarUsuario(usuario)}
                           >
-                            Eliminar
+                            {eliminandoId === usuario.id
+                              ? "Eliminando..."
+                              : "Eliminar"}
                           </button>
                         </div>
                       </td>

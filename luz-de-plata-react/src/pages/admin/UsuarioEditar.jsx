@@ -1,87 +1,141 @@
-import { useState } from "react";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+
 import regiones from "../../data/regiones";
-import { obtenerUsuarios, guardarUsuarios } from "../../utils/usuarios";
+
+import {
+  buscarUsuarioApi,
+  actualizarUsuarioApi,
+} from "../../services/adminUsuariosApi";
+
 import "../../css/estilos.css";
 
-function UsuarioEditar() {
+const FORMULARIO_INICIAL = {
+  run: "",
+  nombre: "",
+  apellidos: "",
+  email: "",
+  fechaNacimiento: "",
+  rol: "CLIENTE",
+  region: "",
+  comuna: "",
+  direccion: "",
+  activo: true,
+};
 
+function UsuarioEditar() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const usuarios = obtenerUsuarios();
-  const usuario = usuarios.find((item) => item.id === id);
-  const [run, setRun] = useState(usuario?.run || "");
-  const [nombre, setNombre] = useState(usuario?.name || "");
-  const [apellidos, setApellidos] = useState(usuario?.lastName || "");
-  const [email, setEmail] = useState(usuario?.email || "");
-  const [fechaNacimiento, setFechaNacimiento] = useState(usuario?.birthDate || "");
-  const [rol, setRol] = useState(usuario?.role || "Cliente");
-  const [region, setRegion] = useState(usuario?.region || "");
-  const [comuna, setComuna] = useState(usuario?.commune || "");
-  const [direccion, setDireccion] = useState(usuario?.address || "");
-  const [activo, setActivo] = useState(usuario?.active !== false);
+
+  const [formulario, setFormulario] = useState(FORMULARIO_INICIAL);
+
+  const [cargando, setCargando] = useState(true);
+  const [guardando, setGuardando] = useState(false);
+  const [errorServidor, setErrorServidor] = useState("");
   const [errores, setErrores] = useState({});
-  const comunasDisponibles = region ? regiones[region] || [] : [];
+
+  // Obtener el usuario desde MySQL
+  useEffect(() => {
+    let activo = true;
+
+    async function cargarUsuario() {
+      setCargando(true);
+      setErrorServidor("");
+
+      try {
+        const usuario = await buscarUsuarioApi(id);
+
+        if (!activo) return;
+
+        setFormulario({
+          run: usuario.run ?? "",
+          nombre: usuario.name ?? "",
+          apellidos: usuario.lastName ?? "",
+          email: usuario.email ?? "",
+          fechaNacimiento: usuario.birthDate ?? "",
+          rol: usuario.role ?? "CLIENTE",
+          region: usuario.region ?? "",
+          comuna: usuario.commune ?? "",
+          direccion: usuario.address ?? "",
+          activo: usuario.active === true,
+        });
+      } catch (error) {
+        if (activo) {
+          setErrorServidor(error.message || "No se pudo cargar el usuario.");
+        }
+      } finally {
+        if (activo) {
+          setCargando(false);
+        }
+      }
+    }
+
+    cargarUsuario();
+
+    return () => {
+      activo = false;
+    };
+  }, [id]);
+
+  // Obtener comunas de la región seleccionada
+  const comunasDisponibles = formulario.region
+    ? regiones[formulario.region] || []
+    : [];
+
+  // Permitir mostrar valores antiguos de MySQL
+  const regionNoRegistrada =
+    formulario.region &&
+    !Object.prototype.hasOwnProperty.call(regiones, formulario.region);
+
+  const comunaNoRegistrada =
+    formulario.comuna && !comunasDisponibles.includes(formulario.comuna);
+
+  function actualizarCampo(evento) {
+    const { name, value, type, checked } = evento.target;
+
+    setFormulario((anterior) => ({
+      ...anterior,
+      [name]: type === "checkbox" ? checked : value,
+      ...(name === "region" ? { comuna: "" } : {}),
+    }));
+
+    setErrores((anterior) => ({
+      ...anterior,
+      [name]: "",
+    }));
+  }
 
   function validarFormulario() {
     const nuevosErrores = {};
 
-    if (!run.trim()) {
-      nuevosErrores.run = "El RUN es requerido.";
+    if (!formulario.nombre.trim()) {
+      nuevosErrores.nombre = "El nombre es obligatorio.";
     }
 
-    if (!nombre.trim()) {
-      nuevosErrores.nombre = "El nombre es requerido.";
+    if (!formulario.apellidos.trim()) {
+      nuevosErrores.apellidos = "Los apellidos son obligatorios.";
     }
 
-    if (!apellidos.trim()) {
-      nuevosErrores.apellidos = "Los apellidos son requeridos.";
+    if (!formulario.email.trim()) {
+      nuevosErrores.email = "El correo es obligatorio.";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formulario.email.trim())) {
+      nuevosErrores.email = "Ingresa un correo válido.";
     }
 
-    if (!email.trim()) {
-      nuevosErrores.email = "El correo es requerido.";
-    } else {
-      const correoValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
-
-      if (!correoValido) {
-        nuevosErrores.email = "Ingresa un correo válido.";
-      }
-    }
-
-    if (!rol) {
+    if (!formulario.rol) {
       nuevosErrores.rol = "Selecciona un rol.";
     }
 
-    if (!region) {
+    if (!formulario.region) {
       nuevosErrores.region = "Selecciona una región.";
     }
 
-    if (!comuna) {
+    if (!formulario.comuna) {
       nuevosErrores.comuna = "Selecciona una comuna.";
     }
 
-    if (!direccion.trim()) {
-      nuevosErrores.direccion = "La dirección es requerida.";
-    }
-
-    const usuarios = obtenerUsuarios();
-
-    const runDuplicado = usuarios.some(
-      (usuario) => usuario.id !== id && usuario.run === run.trim(),
-    );
-
-    if (runDuplicado) {
-      nuevosErrores.run = "El RUN ya está registrado.";
-    }
-
-    const emailDuplicado = usuarios.some(
-      (usuario) =>
-        usuario.id !== id &&
-        usuario.email.toLowerCase() === email.trim().toLowerCase(),
-    );
-
-    if (emailDuplicado) {
-      nuevosErrores.email = "El correo ya está registrado.";
+    if (!formulario.direccion.trim()) {
+      nuevosErrores.direccion = "La dirección es obligatoria.";
     }
 
     setErrores(nuevosErrores);
@@ -89,48 +143,83 @@ function UsuarioEditar() {
     return Object.keys(nuevosErrores).length === 0;
   }
 
-  function guardarCambios(e) {
-    e.preventDefault();
+  // Actualizar los datos del usuario en MySQL
+  async function guardarCambios(evento) {
+    evento.preventDefault();
 
-    if (!validarFormulario()) {
+    if (guardando || !validarFormulario()) {
       return;
     }
 
-    const usuarios = obtenerUsuarios();
+    setGuardando(true);
+    setErrorServidor("");
 
-    const usuariosActualizados = usuarios.map((usuario) => {
-      if (usuario.id !== id) {
-        return usuario;
-      }
-
-      return {
-        ...usuario,
-        run: run.trim(),
-        name: nombre.trim(),
-        lastName: apellidos.trim(),
-        email: email.trim(),
-        birthDate: fechaNacimiento,
-        role: rol,
-        region,
-        commune: comuna,
-        address: direccion.trim(),
-        active: activo,
+    try {
+      const datosActualizados = {
+        run: formulario.run.trim() || null,
+        nombre: formulario.nombre.trim(),
+        apellidos: formulario.apellidos.trim(),
+        email: formulario.email.trim(),
+        fechaNacimiento: formulario.fechaNacimiento || null,
+        rol: formulario.rol,
+        region: formulario.region,
+        comuna: formulario.comuna,
+        direccion: formulario.direccion.trim(),
+        activo: formulario.activo,
       };
-    });
 
-    guardarUsuarios(usuariosActualizados);
+      await actualizarUsuarioApi(id, datosActualizados);
 
-    navigate("/admin/usuarios");
+      navigate("/admin/usuarios", {
+        replace: true,
+      });
+    } catch (error) {
+      setErrorServidor(error.message || "No se pudo actualizar el usuario.");
+    } finally {
+      setGuardando(false);
+    }
   }
 
-  function cambiarRegion(e) {
-    setRegion(e.target.value);
-    setComuna("");
-  }
-  
-  if (!usuario) {
+  // Crear los campos de texto del formulario
+  function campo({
+    nombre,
+    titulo,
+    tipo = "text",
+    obligatorio = false,
+    maxLength,
+  }) {
     return (
-      <Navigate to="/admin/usuarios"replace/>
+      <div className="campo" key={nombre}>
+        <label htmlFor={`editar-${nombre}`}>
+          {titulo}
+          {obligatorio ? " *" : ""}
+        </label>
+
+        <input
+          id={`editar-${nombre}`}
+          name={nombre}
+          type={tipo}
+          value={formulario[nombre]}
+          onChange={actualizarCampo}
+          maxLength={maxLength}
+        />
+
+        {errores[nombre] && (
+          <span className="error-campo">{errores[nombre]}</span>
+        )}
+      </div>
+    );
+  }
+
+  if (cargando) {
+    return (
+      <main>
+        <section className="seccion--corta">
+          <div className="contenedor">
+            <p>Cargando usuario desde MySQL...</p>
+          </div>
+        </section>
+      </main>
     );
   }
 
@@ -146,157 +235,169 @@ function UsuarioEditar() {
 
       <section className="seccion--corta">
         <div className="contenedor">
-          <form
-            className="panel formulario"
-            onSubmit={guardarCambios}
-            noValidate
-          >
-            <div className="campo">
-              <label htmlFor="editar-run">RUN *</label>
+          {errorServidor && (
+            <p role="alert" className="error-campo">
+              {errorServidor}
+            </p>
+          )}
 
-              <input
-                id="editar-run"
-                value={run}
-                onChange={(e) => setRun(e.target.value)}
-              />
+          {errorServidor && !formulario.nombre && !formulario.email ? (
+            <Link to="/admin/usuarios" className="boton boton--claro">
+              Volver a usuarios
+            </Link>
+          ) : (
+            <form
+              className="panel formulario"
+              onSubmit={guardarCambios}
+              noValidate
+            >
+              {campo({
+                nombre: "run",
+                titulo: "RUN",
+                maxLength: 20,
+              })}
 
-              <span className="error-campo">{errores.run}</span>
-            </div>
+              {campo({
+                nombre: "nombre",
+                titulo: "Nombre",
+                obligatorio: true,
+                maxLength: 100,
+              })}
 
-            <div className="campo">
-              <label htmlFor="editar-nombre">Nombre *</label>
+              {campo({
+                nombre: "apellidos",
+                titulo: "Apellidos",
+                obligatorio: true,
+                maxLength: 100,
+              })}
 
-              <input
-                id="editar-nombre"
-                value={nombre}
-                onChange={(e) => setNombre(e.target.value)}
-              />
+              {campo({
+                nombre: "email",
+                titulo: "Correo electrónico",
+                tipo: "email",
+                obligatorio: true,
+                maxLength: 150,
+              })}
 
-              <span className="error-campo">{errores.nombre}</span>
-            </div>
+              {campo({
+                nombre: "fechaNacimiento",
+                titulo: "Fecha de nacimiento",
+                tipo: "date",
+              })}
 
-            <div className="campo">
-              <label htmlFor="editar-apellidos">Apellidos *</label>
+              <div className="campo">
+                <label htmlFor="editar-rol">Tipo de usuario *</label>
 
-              <input
-                id="editar-apellidos"
-                value={apellidos}
-                onChange={(e) => setApellidos(e.target.value)}
-              />
+                <select
+                  id="editar-rol"
+                  name="rol"
+                  value={formulario.rol}
+                  onChange={actualizarCampo}
+                >
+                  <option value="CLIENTE">Cliente</option>
 
-              <span className="error-campo">{errores.apellidos}</span>
-            </div>
+                  <option value="VENDEDOR">Vendedor</option>
 
-            <div className="campo">
-              <label htmlFor="editar-email">Correo *</label>
+                  <option value="ADMINISTRADOR">Administrador</option>
+                </select>
 
-              <input
-                id="editar-email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+                {errores.rol && (
+                  <span className="error-campo">{errores.rol}</span>
+                )}
+              </div>
 
-              <span className="error-campo">{errores.email}</span>
-            </div>
+              <div className="campo">
+                <label htmlFor="editar-region">Región *</label>
 
-            <div className="campo">
-              <label htmlFor="editar-fecha">Fecha de nacimiento</label>
+                <select
+                  id="editar-region"
+                  name="region"
+                  value={formulario.region}
+                  onChange={actualizarCampo}
+                >
+                  <option value="">Selecciona una región</option>
 
-              <input
-                id="editar-fecha"
-                type="date"
-                value={fechaNacimiento}
-                onChange={(e) => setFechaNacimiento(e.target.value)}
-              />
-            </div>
+                  {regionNoRegistrada && (
+                    <option value={formulario.region}>
+                      {formulario.region}
+                    </option>
+                  )}
 
-            <div className="campo">
-              <label htmlFor="editar-rol">Tipo de usuario *</label>
+                  {Object.keys(regiones).map((region) => (
+                    <option key={region} value={region}>
+                      {region}
+                    </option>
+                  ))}
+                </select>
 
-              <select
-                id="editar-rol"
-                value={rol}
-                onChange={(e) => setRol(e.target.value)}
-              >
-                <option value="Administrador">Administrador</option>
+                {errores.region && (
+                  <span className="error-campo">{errores.region}</span>
+                )}
+              </div>
 
-                <option value="Cliente">Cliente</option>
+              <div className="campo">
+                <label htmlFor="editar-comuna">Comuna *</label>
 
-                <option value="Vendedor">Vendedor</option>
-              </select>
+                <select
+                  id="editar-comuna"
+                  name="comuna"
+                  value={formulario.comuna}
+                  onChange={actualizarCampo}
+                  disabled={!formulario.region}
+                >
+                  <option value="">Selecciona una comuna</option>
 
-              <span className="error-campo">{errores.rol}</span>
-            </div>
+                  {comunaNoRegistrada && (
+                    <option value={formulario.comuna}>
+                      {formulario.comuna}
+                    </option>
+                  )}
 
-            <div className="campo">
-              <label htmlFor="editar-region">Región *</label>
+                  {comunasDisponibles.map((comuna) => (
+                    <option key={comuna} value={comuna}>
+                      {comuna}
+                    </option>
+                  ))}
+                </select>
 
-              <select
-                id="editar-region"
-                value={region}
-                onChange={cambiarRegion}
-              >
-                <option value="">Selecciona una región</option>
+                {errores.comuna && (
+                  <span className="error-campo">{errores.comuna}</span>
+                )}
+              </div>
 
-                {Object.keys(regiones).map((nombreRegion) => (
-                  <option key={nombreRegion} value={nombreRegion}>
-                    {nombreRegion}
-                  </option>
-                ))}
-              </select>
+              {campo({
+                nombre: "direccion",
+                titulo: "Dirección",
+                obligatorio: true,
+                maxLength: 200,
+              })}
 
-              <span className="error-campo">{errores.region}</span>
-            </div>
+              <div className="campo">
+                <label htmlFor="editar-activo">
+                  <input
+                    id="editar-activo"
+                    name="activo"
+                    type="checkbox"
+                    checked={formulario.activo}
+                    onChange={actualizarCampo}
+                  />
+                  Usuario activo
+                </label>
+              </div>
 
-            <div className="campo">
-              <label htmlFor="editar-comuna">Comuna *</label>
+              <p>La contraseña actual del usuario se conservará sin cambios.</p>
 
-              <select
-                id="editar-comuna"
-                value={comuna}
-                onChange={(e) => setComuna(e.target.value)}
-                disabled={!region}
-              >
-                <option value="">Selecciona una comuna</option>
+              <div className="detalle-producto__acciones">
+                <button type="submit" className="boton" disabled={guardando}>
+                  {guardando ? "Guardando..." : "Guardar cambios"}
+                </button>
 
-                {comunasDisponibles.map((nombreComuna) => (
-                  <option key={nombreComuna} value={nombreComuna}>
-                    {nombreComuna}
-                  </option>
-                ))}
-              </select>
-
-              <span className="error-campo">{errores.comuna}</span>
-            </div>
-
-            <div className="campo">
-              <label htmlFor="editar-direccion">Dirección *</label>
-
-              <input
-                id="editar-direccion"
-                value={direccion}
-                onChange={(e) => setDireccion(e.target.value)}
-              />
-
-              <span className="error-campo">{errores.direccion}</span>
-            </div>
-
-            <div className="campo">
-              <label>
-                <input
-                  type="checkbox"
-                  checked={activo}
-                  onChange={(e) => setActivo(e.target.checked)}
-                />
-                Usuario activo
-              </label>
-            </div>
-
-            <button type="submit" className="boton">
-              Guardar cambios
-            </button>
-          </form>
+                <Link to="/admin/usuarios" className="boton boton--claro">
+                  Cancelar
+                </Link>
+              </div>
+            </form>
+          )}
         </div>
       </section>
     </main>

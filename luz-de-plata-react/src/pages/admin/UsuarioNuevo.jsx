@@ -1,95 +1,97 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
 import regiones from "../../data/regiones";
-import { obtenerUsuarios, guardarUsuarios } from "../../utils/usuarios";
+import { crearUsuarioApi } from "../../services/adminUsuariosApi";
+
 import "../../css/estilos.css";
+
+const FORMULARIO_INICIAL = {
+  run: "",
+  nombre: "",
+  apellidos: "",
+  email: "",
+  fechaNacimiento: "",
+  rol: "CLIENTE",
+  region: "",
+  comuna: "",
+  direccion: "",
+  password: "",
+  confirmarPassword: "",
+};
 
 function UsuarioNuevo() {
   const navigate = useNavigate();
 
-  const [run, setRun] = useState("");
-  const [nombre, setNombre] = useState("");
-  const [apellidos, setApellidos] = useState("");
-  const [email, setEmail] = useState("");
-  const [fechaNacimiento, setFechaNacimiento] = useState("");
-  const [rol, setRol] = useState("Cliente");
-  const [region, setRegion] = useState("");
-  const [comuna, setComuna] = useState("");
-  const [direccion, setDireccion] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [formulario, setFormulario] = useState(FORMULARIO_INICIAL);
 
   const [errores, setErrores] = useState({});
+  const [errorServidor, setErrorServidor] = useState("");
+  const [guardando, setGuardando] = useState(false);
 
-  const comunasDisponibles = region ? regiones[region] || [] : [];
+  // Obtener comunas de la región seleccionada
+  const comunasDisponibles = formulario.region
+    ? regiones[formulario.region] || []
+    : [];
 
+  // Actualizar los campos del formulario
+  function actualizarCampo(evento) {
+    const { name, value } = evento.target;
+
+    setFormulario((anterior) => ({
+      ...anterior,
+      [name]: value,
+      ...(name === "region" ? { comuna: "" } : {}),
+    }));
+
+    setErrores((anterior) => ({
+      ...anterior,
+      [name]: "",
+    }));
+  }
+
+  // Validar los datos antes de guardar
   function validarFormulario() {
     const nuevosErrores = {};
 
-    if (!run.trim()) {
-      nuevosErrores.run = "El RUN es requerido.";
+    if (!formulario.nombre.trim()) {
+      nuevosErrores.nombre = "El nombre es obligatorio.";
     }
 
-    if (!nombre.trim()) {
-      nuevosErrores.nombre = "El nombre es requerido.";
+    if (!formulario.apellidos.trim()) {
+      nuevosErrores.apellidos = "Los apellidos son obligatorios.";
     }
 
-    if (!apellidos.trim()) {
-      nuevosErrores.apellidos = "Los apellidos son requeridos.";
+    if (!formulario.email.trim()) {
+      nuevosErrores.email = "El correo es obligatorio.";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formulario.email.trim())) {
+      nuevosErrores.email = "Ingresa un correo válido.";
     }
 
-    if (!email.trim()) {
-      nuevosErrores.email = "El correo es requerido.";
-    } else {
-      const correoValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
-
-      if (!correoValido) {
-        nuevosErrores.email = "Ingresa un correo válido.";
-      }
-    }
-
-    if (!rol) {
-      nuevosErrores.rol = "Selecciona un rol.";
-    }
-
-    if (!region) {
+    if (!formulario.region) {
       nuevosErrores.region = "Selecciona una región.";
     }
 
-    if (!comuna) {
+    if (!formulario.comuna) {
       nuevosErrores.comuna = "Selecciona una comuna.";
     }
 
-    if (!direccion.trim()) {
-      nuevosErrores.direccion = "La dirección es requerida.";
+    if (!formulario.direccion.trim()) {
+      nuevosErrores.direccion = "La dirección es obligatoria.";
     }
 
-    if (!password) {
-      nuevosErrores.password = "La contraseña es requerida.";
-    } else if (password.length < 4 || password.length > 10) {
-      nuevosErrores.password = "Debe tener entre 4 y 10 caracteres.";
+    if (formulario.password.length < 12) {
+      nuevosErrores.password =
+        "La contraseña debe tener al menos 12 caracteres.";
     }
 
-    if (!confirmPassword) {
-      nuevosErrores.confirmPassword = "Debes confirmar la contraseña.";
-    } else if (password !== confirmPassword) {
-      nuevosErrores.confirmPassword = "Las contraseñas no coinciden.";
+    if (formulario.password.length > 128) {
+      nuevosErrores.password =
+        "La contraseña no puede superar los 128 caracteres.";
     }
 
-    const usuarios = obtenerUsuarios();
-
-    const runExiste = usuarios.some((usuario) => usuario.run === run.trim());
-
-    if (runExiste) {
-      nuevosErrores.run = "El RUN ya está registrado.";
-    }
-
-    const emailExiste = usuarios.some(
-      (usuario) => usuario.email.toLowerCase() === email.trim().toLowerCase(),
-    );
-
-    if (emailExiste) {
-      nuevosErrores.email = "El correo ya está registrado.";
+    if (formulario.password !== formulario.confirmarPassword) {
+      nuevosErrores.confirmarPassword = "Las contraseñas no coinciden.";
     }
 
     setErrores(nuevosErrores);
@@ -97,40 +99,73 @@ function UsuarioNuevo() {
     return Object.keys(nuevosErrores).length === 0;
   }
 
-  function guardarNuevoUsuario(e) {
-    e.preventDefault();
+  // Crear usuario real mediante Spring Boot
+  async function guardarNuevoUsuario(evento) {
+    evento.preventDefault();
 
-    if (!validarFormulario()) {
+    if (guardando || !validarFormulario()) {
       return;
     }
 
-    const usuarios = obtenerUsuarios();
+    setGuardando(true);
+    setErrorServidor("");
 
-    const nuevoUsuario = {
-      id: `USR-${Date.now()}`,
-      run: run.trim(),
-      name: nombre.trim(),
-      lastName: apellidos.trim(),
-      email: email.trim(),
-      birthDate: fechaNacimiento,
-      role: rol,
-      region,
-      commune: comuna,
-      address: direccion.trim(),
-      password,
-      active: true,
-    };
+    try {
+      const nuevoUsuario = {
+        run: formulario.run.trim() || null,
+        nombre: formulario.nombre.trim(),
+        apellidos: formulario.apellidos.trim(),
+        email: formulario.email.trim(),
+        fechaNacimiento: formulario.fechaNacimiento || null,
+        rol: formulario.rol,
+        region: formulario.region,
+        comuna: formulario.comuna,
+        direccion: formulario.direccion.trim(),
+        password: formulario.password,
+        activo: true,
+      };
 
-    const nuevosUsuarios = [...usuarios, nuevoUsuario];
+      await crearUsuarioApi(nuevoUsuario);
 
-    guardarUsuarios(nuevosUsuarios);
-
-    navigate("/admin/usuarios");
+      navigate("/admin/usuarios", {
+        replace: true,
+      });
+    } catch (error) {
+      setErrorServidor(error.message || "No se pudo crear el usuario.");
+    } finally {
+      setGuardando(false);
+    }
   }
 
-  function cambiarRegion(e) {
-    setRegion(e.target.value);
-    setComuna("");
+  // Campos reutilizables del formulario
+  function campo({
+    nombre,
+    titulo,
+    tipo = "text",
+    obligatorio = false,
+    maxLength,
+  }) {
+    return (
+      <div className="campo" key={nombre}>
+        <label htmlFor={`nuevo-${nombre}`}>
+          {titulo}
+          {obligatorio ? " *" : ""}
+        </label>
+
+        <input
+          id={`nuevo-${nombre}`}
+          name={nombre}
+          type={tipo}
+          value={formulario[nombre]}
+          onChange={actualizarCampo}
+          maxLength={maxLength}
+        />
+
+        {errores[nombre] && (
+          <span className="error-campo">{errores[nombre]}</span>
+        )}
+      </div>
+    );
   }
 
   return (
@@ -139,7 +174,7 @@ function UsuarioNuevo() {
         <div className="contenedor">
           <h1>Nuevo usuario</h1>
 
-          <p className="bajada">Crea un nuevo usuario para el sistema.</p>
+          <p className="bajada">Crea un nuevo usuario en Luz de Plata.</p>
         </div>
       </section>
 
@@ -150,162 +185,144 @@ function UsuarioNuevo() {
             onSubmit={guardarNuevoUsuario}
             noValidate
           >
-            <div className="campo">
-              <label htmlFor="admin-run">RUN *</label>
+            {errorServidor && (
+              <p role="alert" className="error-campo">
+                {errorServidor}
+              </p>
+            )}
 
-              <input
-                id="admin-run"
-                value={run}
-                onChange={(e) => setRun(e.target.value)}
-              />
+            {campo({
+              nombre: "run",
+              titulo: "RUN",
+              maxLength: 20,
+            })}
 
-              <span className="error-campo">{errores.run}</span>
-            </div>
+            {campo({
+              nombre: "nombre",
+              titulo: "Nombre",
+              obligatorio: true,
+              maxLength: 100,
+            })}
 
-            <div className="campo">
-              <label htmlFor="admin-nombre">Nombre *</label>
+            {campo({
+              nombre: "apellidos",
+              titulo: "Apellidos",
+              obligatorio: true,
+              maxLength: 100,
+            })}
 
-              <input
-                id="admin-nombre"
-                value={nombre}
-                onChange={(e) => setNombre(e.target.value)}
-              />
+            {campo({
+              nombre: "email",
+              titulo: "Correo electrónico",
+              tipo: "email",
+              obligatorio: true,
+              maxLength: 150,
+            })}
 
-              <span className="error-campo">{errores.nombre}</span>
-            </div>
-
-            <div className="campo">
-              <label htmlFor="admin-apellidos">Apellidos *</label>
-
-              <input
-                id="admin-apellidos"
-                value={apellidos}
-                onChange={(e) => setApellidos(e.target.value)}
-              />
-
-              <span className="error-campo">{errores.apellidos}</span>
-            </div>
-
-            <div className="campo">
-              <label htmlFor="admin-email">Correo *</label>
-
-              <input
-                id="admin-email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-
-              <span className="error-campo">{errores.email}</span>
-            </div>
+            {campo({
+              nombre: "fechaNacimiento",
+              titulo: "Fecha de nacimiento",
+              tipo: "date",
+            })}
 
             <div className="campo">
-              <label htmlFor="admin-fecha">Fecha de nacimiento</label>
-
-              <input
-                id="admin-fecha"
-                type="date"
-                value={fechaNacimiento}
-                onChange={(e) => setFechaNacimiento(e.target.value)}
-              />
-            </div>
-
-            <div className="campo">
-              <label htmlFor="admin-rol">Tipo de usuario *</label>
+              <label htmlFor="nuevo-rol">Tipo de usuario *</label>
 
               <select
-                id="admin-rol"
-                value={rol}
-                onChange={(e) => setRol(e.target.value)}
+                id="nuevo-rol"
+                name="rol"
+                value={formulario.rol}
+                onChange={actualizarCampo}
               >
-                <option value="Administrador">Administrador</option>
+                <option value="CLIENTE">Cliente</option>
 
-                <option value="Cliente">Cliente</option>
+                <option value="VENDEDOR">Vendedor</option>
 
-                <option value="Vendedor">Vendedor</option>
+                <option value="ADMINISTRADOR">Administrador</option>
               </select>
-
-              <span className="error-campo">{errores.rol}</span>
             </div>
 
             <div className="campo">
-              <label htmlFor="admin-region">Región *</label>
+              <label htmlFor="nuevo-region">Región *</label>
 
-              <select id="admin-region" value={region} onChange={cambiarRegion}>
+              <select
+                id="nuevo-region"
+                name="region"
+                value={formulario.region}
+                onChange={actualizarCampo}
+              >
                 <option value="">Selecciona una región</option>
 
-                {Object.keys(regiones).map((nombreRegion) => (
-                  <option key={nombreRegion} value={nombreRegion}>
-                    {nombreRegion}
+                {Object.keys(regiones).map((region) => (
+                  <option key={region} value={region}>
+                    {region}
                   </option>
                 ))}
               </select>
 
-              <span className="error-campo">{errores.region}</span>
+              {errores.region && (
+                <span className="error-campo">{errores.region}</span>
+              )}
             </div>
 
             <div className="campo">
-              <label htmlFor="admin-comuna">Comuna *</label>
+              <label htmlFor="nuevo-comuna">Comuna *</label>
 
               <select
-                id="admin-comuna"
-                value={comuna}
-                onChange={(e) => setComuna(e.target.value)}
-                disabled={!region}
+                id="nuevo-comuna"
+                name="comuna"
+                value={formulario.comuna}
+                onChange={actualizarCampo}
+                disabled={!formulario.region}
               >
                 <option value="">Selecciona una comuna</option>
 
-                {comunasDisponibles.map((nombreComuna) => (
-                  <option key={nombreComuna} value={nombreComuna}>
-                    {nombreComuna}
+                {comunasDisponibles.map((comuna) => (
+                  <option key={comuna} value={comuna}>
+                    {comuna}
                   </option>
                 ))}
               </select>
 
-              <span className="error-campo">{errores.comuna}</span>
+              {errores.comuna && (
+                <span className="error-campo">{errores.comuna}</span>
+              )}
             </div>
 
-            <div className="campo">
-              <label htmlFor="admin-direccion">Dirección *</label>
+            {campo({
+              nombre: "direccion",
+              titulo: "Dirección",
+              obligatorio: true,
+              maxLength: 200,
+            })}
 
-              <input
-                id="admin-direccion"
-                value={direccion}
-                onChange={(e) => setDireccion(e.target.value)}
-              />
+            {campo({
+              nombre: "password",
+              titulo: "Contraseña",
+              tipo: "password",
+              obligatorio: true,
+              maxLength: 128,
+            })}
 
-              <span className="error-campo">{errores.direccion}</span>
+            {campo({
+              nombre: "confirmarPassword",
+              titulo: "Confirmar contraseña",
+              tipo: "password",
+              obligatorio: true,
+              maxLength: 128,
+            })}
+
+            <p>La contraseña debe tener entre 12 y 128 caracteres.</p>
+
+            <div className="detalle-producto__acciones">
+              <button type="submit" className="boton" disabled={guardando}>
+                {guardando ? "Guardando..." : "Guardar usuario"}
+              </button>
+
+              <Link to="/admin/usuarios" className="boton boton--claro">
+                Cancelar
+              </Link>
             </div>
-
-            <div className="campo">
-              <label htmlFor="admin-password">Contraseña *</label>
-
-              <input
-                id="admin-password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-
-              <span className="error-campo">{errores.password}</span>
-            </div>
-
-            <div className="campo">
-              <label htmlFor="admin-confirmar">Confirmar contraseña *</label>
-
-              <input
-                id="admin-confirmar"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-
-              <span className="error-campo">{errores.confirmPassword}</span>
-            </div>
-
-            <button type="submit" className="boton">
-              Guardar usuario
-            </button>
           </form>
         </div>
       </section>

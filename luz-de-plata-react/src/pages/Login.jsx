@@ -49,9 +49,9 @@ function Login() {
       return false;
     }
 
-    if (password.length < 4 || password.length > 10) {
+    if (password.length < 4 || password.length > 15) {
       setErrorPassword(
-        "Debe tener entre 4 y 10 caracteres.",
+        "Debe tener entre 4 y 15 caracteres.",
       );
 
       return false;
@@ -191,7 +191,7 @@ function Login() {
             <input
               autoComplete="current-password"
               id="password"
-              maxLength="10"
+              maxLength="15"
               minLength="4"
               name="password"
               type="password"
@@ -239,7 +239,7 @@ function Login() {
 
           <p className="ayuda">
             Demo: admin@luzdeplata.cl /
-            Admin123!
+            AdminDuoc1234
           </p>
         </form>
       </section>

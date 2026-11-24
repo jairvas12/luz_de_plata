@@ -33,11 +33,10 @@ public class BoletaService {
     private final UsuarioRepository usuarioRepository;
 
     public BoletaService(
-        BoletaRepository boletaRepository,
-        DetalleBoletaRepository detalleBoletaRepository,
-        ProductoRepository productoRepository,
-        UsuarioRepository usuarioRepository
-    ) {
+            BoletaRepository boletaRepository,
+            DetalleBoletaRepository detalleBoletaRepository,
+            ProductoRepository productoRepository,
+            UsuarioRepository usuarioRepository) {
         this.boletaRepository = boletaRepository;
         this.detalleBoletaRepository = detalleBoletaRepository;
         this.productoRepository = productoRepository;
@@ -51,138 +50,109 @@ public class BoletaService {
     public Boleta buscarPorId(Long id) {
 
         return boletaRepository
-            .findByIdConUsuario(id)
-            .orElseThrow(
-                () -> new RecursoNoEncontradoException(
-                    "Boleta no encontrada"
-                )
-            );
+                .findByIdConUsuario(id)
+                .orElseThrow(
+                        () -> new RecursoNoEncontradoException(
+                                "Boleta no encontrada"));
     }
 
     public List<Boleta> listarPorUsuario(
-        Long usuarioId
-    ) {
+            Long usuarioId) {
         return boletaRepository
-            .findByUsuarioIdConUsuario(
-                usuarioId
-            );
+                .findByUsuarioIdConUsuario(
+                        usuarioId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<DetalleBoleta> listarDetallesPorBoleta(
+            Long boletaId) {
+        return detalleBoletaRepository.findByBoleta_Id(
+                boletaId);
     }
 
     @Transactional
     public Boleta crearCompra(
-        String email,
-        List<ItemCompraRequest> items
-    ) {
+            String email,
+            List<ItemCompraRequest> items) {
 
         if (items == null || items.isEmpty()) {
             throw new DatosInvalidosException(
-                "La compra debe contener al menos un producto"
-            );
+                    "La compra debe contener al menos un producto");
         }
 
-        Usuario usuario =
-            usuarioRepository
+        Usuario usuario = usuarioRepository
                 .findByEmail(email)
                 .orElseThrow(
-                    () -> new RecursoNoEncontradoException(
-                        "Usuario no encontrado"
-                    )
-                );
+                        () -> new RecursoNoEncontradoException(
+                                "Usuario no encontrado"));
 
-        String numeroOrden =
-            "LP-"
-            + UUID.randomUUID()
-                .toString()
-                .substring(0, 8)
-                .toUpperCase();
+        String numeroOrden = "LP-"
+                + UUID.randomUUID()
+                        .toString()
+                        .substring(0, 8)
+                        .toUpperCase();
 
-        Boleta boleta =
-            new Boleta(
+        Boleta boleta = new Boleta(
                 numeroOrden,
                 LocalDateTime.now(),
                 BigDecimal.ZERO,
                 EstadoBoleta.CONFIRMADA,
-                usuario
-            );
+                usuario);
 
-        boleta =
-            boletaRepository.save(boleta);
+        boleta = boletaRepository.save(boleta);
 
-        BigDecimal total =
-            BigDecimal.ZERO;
+        BigDecimal total = BigDecimal.ZERO;
 
         for (ItemCompraRequest item : items) {
 
-            if (
-                item.getCantidad() == null
-                || item.getCantidad() <= 0
-            ) {
+            if (item.getCantidad() == null
+                    || item.getCantidad() <= 0) {
                 throw new DatosInvalidosException(
-                    "La cantidad debe ser mayor que cero"
-                );
+                        "La cantidad debe ser mayor que cero");
             }
 
-            Producto producto =
-                productoRepository
+            Producto producto = productoRepository
                     .findById(
-                        item.getProductoId()
-                    )
+                            item.getProductoId())
                     .orElseThrow(
-                        () -> new RecursoNoEncontradoException(
-                            "Producto no encontrado"
-                        )
-                    );
+                            () -> new RecursoNoEncontradoException(
+                                    "Producto no encontrado"));
 
-            if (
-                producto.getStock()
-                < item.getCantidad()
-            ) {
+            if (producto.getStock() < item.getCantidad()) {
                 throw new DatosInvalidosException(
-                    "Stock insuficiente para el producto: "
-                    + producto.getNombre()
-                );
+                        "Stock insuficiente para el producto: "
+                                + producto.getNombre());
             }
 
-            BigDecimal precioUnitario =
-                producto.getPrecio();
+            BigDecimal precioUnitario = producto.getPrecio();
 
-            BigDecimal subtotal =
-                precioUnitario.multiply(
+            BigDecimal subtotal = precioUnitario.multiply(
                     BigDecimal.valueOf(
-                        item.getCantidad()
-                    )
-                );
+                            item.getCantidad()));
 
-            DetalleBoleta detalle =
-                new DetalleBoleta(
+            DetalleBoleta detalle = new DetalleBoleta(
                     boleta,
                     producto,
                     item.getCantidad(),
                     precioUnitario,
-                    subtotal
-                );
+                    subtotal);
 
             detalleBoletaRepository.save(
-                detalle
-            );
+                    detalle);
 
             producto.setStock(
-                producto.getStock()
-                - item.getCantidad()
-            );
+                    producto.getStock()
+                            - item.getCantidad());
 
             productoRepository.save(
-                producto
-            );
+                    producto);
 
-            total =
-                total.add(subtotal);
+            total = total.add(subtotal);
         }
 
         boleta.setTotal(total);
 
         return boletaRepository.save(
-            boleta
-        );
+                boleta);
     }
 }

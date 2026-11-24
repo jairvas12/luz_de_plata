@@ -1,19 +1,86 @@
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { obtenerProductosConStock } from "../utils/stock";
+
+import { obtenerProductoPorId } from "../services/productosService";
 import { agregarAlCarrito } from "../utils/carrito";
+
 import "../css/estilos.css";
 
 function DetalleProducto() {
   const { id } = useParams();
-  const productos = obtenerProductosConStock();
-  const producto = productos.find( (producto) => producto.id === id);
 
-  if (!producto) {
+  const [producto, setProducto] = useState(null);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState("");
+  const [mensaje, setMensaje] = useState("");
+
+  // Consultar el producto desde Spring Boot
+  useEffect(() => {
+    let activo = true;
+
+    async function cargarProducto() {
+      setCargando(true);
+      setError("");
+      setMensaje("");
+      setProducto(null);
+
+      try {
+        const datos = await obtenerProductoPorId(id);
+
+        if (activo) {
+          setProducto(datos);
+        }
+      } catch (err) {
+        if (activo) {
+          setError(err.message || "No se pudo cargar el producto");
+        }
+      } finally {
+        if (activo) {
+          setCargando(false);
+        }
+      }
+    }
+
+    cargarProducto();
+
+    return () => {
+      activo = false;
+    };
+  }, [id]);
+
+  // Agregar producto al carrito local
+  function manejarAgregarCarrito() {
+    if (!producto || producto.stock <= 0) {
+      return;
+    }
+
+    agregarAlCarrito(producto);
+
+    setMensaje("Producto agregado al carrito correctamente.");
+  }
+
+  // Pantalla de carga
+  if (cargando) {
     return (
       <main>
         <section className="seccion--corta">
           <div className="contenedor">
-            <h1>Producto no encontrado</h1>
+            <p>Cargando producto desde MySQL...</p>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
+  // Producto inexistente o error de conexión
+  if (error || !producto) {
+    return (
+      <main>
+        <section className="seccion--corta">
+          <div className="contenedor">
+            <h1>No se pudo mostrar el producto</h1>
+
+            <p role="alert">{error || "Producto no encontrado"}</p>
 
             <Link to="/Catalogo">Volver al catálogo</Link>
           </div>
@@ -26,10 +93,12 @@ function DetalleProducto() {
     <main>
       <section className="seccion--corta">
         <div className="contenedor detalle-producto">
+          {/* Imagen del producto */}
           <div className="detalle-producto__imagen">
             <img src={producto.image} alt={producto.name} />
           </div>
 
+          {/* Información del producto */}
           <div className="detalle-producto__info">
             <span className="producto-card__categoria">
               {producto.category}
@@ -47,12 +116,13 @@ function DetalleProducto() {
 
             <p>Stock disponible: {producto.stock}</p>
 
+            {/* Botones */}
             <div className="detalle-producto__acciones">
               <button
                 type="button"
                 className="boton"
                 disabled={producto.stock <= 0}
-                onClick={() => agregarAlCarrito(producto)}
+                onClick={manejarAgregarCarrito}
               >
                 {producto.stock <= 0 ? "Sin stock" : "Añadir al carrito"}
               </button>
@@ -61,6 +131,8 @@ function DetalleProducto() {
                 Volver al catálogo
               </Link>
             </div>
+
+            {mensaje && <p role="status">{mensaje}</p>}
           </div>
         </div>
       </section>
