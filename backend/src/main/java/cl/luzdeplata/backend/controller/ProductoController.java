@@ -1,3 +1,4 @@
+
 package cl.luzdeplata.backend.controller;
 
 import java.util.List;
@@ -24,133 +25,128 @@ public class ProductoController {
     private final ProductoService productoService;
 
     public ProductoController(
-        ProductoService productoService
-    ) {
+            ProductoService productoService) {
         this.productoService = productoService;
     }
 
+    // LISTAR PRODUCTOS
     @GetMapping
     public ResponseEntity<List<Producto>> listarTodos() {
 
         return ResponseEntity.ok(
-            productoService.listarTodos()
-        );
+                productoService.listarTodos());
     }
 
+    // BUSCAR PRODUCTO POR ID
     @GetMapping("/{id}")
     public ResponseEntity<Producto> buscarPorId(
-        @PathVariable Long id
-    ) {
+            @PathVariable Long id) {
 
         return ResponseEntity.ok(
-            productoService.buscarPorId(id)
-        );
+                productoService.buscarPorId(id));
     }
 
+    // BUSCAR PRODUCTO POR CODIGO
     @GetMapping("/codigo/{codigo}")
     public ResponseEntity<Producto> buscarPorCodigo(
-        @PathVariable String codigo
-    ) {
+            @PathVariable String codigo) {
 
         return ResponseEntity.ok(
-            productoService.buscarPorCodigo(codigo)
-        );
+                productoService.buscarPorCodigo(codigo));
     }
 
+    // LISTAR PRODUCTOS DESTACADOS
     @GetMapping("/destacados")
     public ResponseEntity<List<Producto>> listarDestacados() {
 
         return ResponseEntity.ok(
-            productoService.listarDestacados()
-        );
+                productoService.listarDestacados());
     }
 
+    // LISTAR POR CATEGORIA
     @GetMapping("/categoria")
     public ResponseEntity<List<Producto>> listarPorCategoria(
-        @RequestParam Long categoriaId
-    ) {
+            @RequestParam Long categoriaId) {
 
         return ResponseEntity.ok(
-            productoService.listarPorCategoria(
-                categoriaId
-            )
-        );
+                productoService.listarPorCategoria(categoriaId));
     }
 
+    // CREAR PRODUCTO
     @PostMapping
     public ResponseEntity<Producto> crear(
-        @RequestBody Producto producto,
-        @RequestParam Long categoriaId
-    ) {
+            @RequestBody Producto producto,
+            @RequestParam Long categoriaId) {
 
-        Producto productoGuardado =
-            productoService.guardar(
+        Producto productoGuardado = productoService.guardar(
                 producto,
-                categoriaId
-            );
+                categoriaId);
+
+        // Volver a consultar el producto con su categoria cargada
+        Producto productoCompleto = productoService.buscarPorId(
+                productoGuardado.getId());
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(productoGuardado);
+                .body(productoCompleto);
     }
 
+    // ACTUALIZAR PRODUCTO
     @PutMapping("/{id}")
     public ResponseEntity<Producto> actualizar(
-        @PathVariable Long id,
-        @RequestBody Producto producto,
-        @RequestParam Long categoriaId
-    ) {
+            @PathVariable Long id,
+            @RequestBody Producto producto,
+            @RequestParam Long categoriaId) {
 
-        Producto productoExistente =
-            productoService.buscarPorId(id);
+        Producto productoExistente = productoService.buscarPorId(id);
 
         productoExistente.setCodigo(
-            producto.getCodigo()
-        );
+                producto.getCodigo());
 
         productoExistente.setNombre(
-            producto.getNombre()
-        );
+                producto.getNombre());
 
         productoExistente.setDescripcion(
-            producto.getDescripcion()
-        );
+                producto.getDescripcion());
 
         productoExistente.setPrecio(
-            producto.getPrecio()
-        );
+                producto.getPrecio());
 
         productoExistente.setStock(
-            producto.getStock()
-        );
+                producto.getStock());
 
         productoExistente.setStockCritico(
-            producto.getStockCritico()
-        );
+                producto.getStockCritico());
 
         productoExistente.setImagen(
-            producto.getImagen()
-        );
+                producto.getImagen());
 
         productoExistente.setDestacado(
-            producto.getDestacado()
-        );
+                producto.getDestacado());
+
+        // Guardar en MySQL
+        Producto productoGuardado = productoService.guardar(
+                productoExistente,
+                categoriaId);
+
+        // Recuperar el registro con la categoria inicializada
+        // antes de devolver el JSON a React
+        Producto productoCompleto = productoService.buscarPorId(
+                productoGuardado.getId());
 
         return ResponseEntity.ok(
-            productoService.guardar(
-                productoExistente,
-                categoriaId
-            )
-        );
+                productoCompleto);
     }
 
+    // ELIMINAR PRODUCTO
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(
-        @PathVariable Long id
-    ) {
+            @PathVariable Long id) {
 
         productoService.eliminar(id);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 }
